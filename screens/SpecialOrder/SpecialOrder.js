@@ -1,12 +1,18 @@
 // Formik x React Native example
 import React from "react";
-import { Button, TextInput, View, Image } from "react-native";
+import { View, Image, Alert } from "react-native";
 import { Formik } from "formik";
 import { FormInput, TextButton } from "../../Components";
 import AuthLayout from "../Authentication/AuthLayout";
-import { FONTS, SIZES, COLORS, icons } from "../../constants";
+import { SIZES, COLORS, icons } from "../../constants";
+import { useAuth } from "../../context/AuthContext";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../Firebase/firebase.Config";
+import { useNavigation } from "@react-navigation/native";
 
-const SpecialOrder = ({ navigation, route }) => {
+const SpecialOrder = () => {
+  const { currentUser, dataUser } = useAuth();
+  const navigation = useNavigation();
   //these states for form validations
   //meal name errors will be here
   const [nameError, setNameError] = React.useState("");
@@ -14,7 +20,9 @@ const SpecialOrder = ({ navigation, route }) => {
   const [numberError, setNumberError] = React.useState("");
   //meal describtion is here
   const [describtionError, setDescribtionError] = React.useState("");
-  //function to check if everything validate to enable signin
+  //isSubmitting check
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  //function to check if everything validate to enable ordering
   function isVerythingOk(name, quantity, describtion) {
     return (
       name != "" &&
@@ -29,7 +37,57 @@ const SpecialOrder = ({ navigation, route }) => {
   return (
     <Formik
       initialValues={{ name: "", quantity: "", describtion: "" }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={async (values) => {
+        const today = new Date(
+          Date("he-IL", {
+            timeZone: "Asia/Jerusalem",
+          })
+        );
+        var date =
+          today.getFullYear() +
+          "-" +
+          (today.getMonth() + 1) +
+          "-" +
+          today.getDate();
+        var time =
+          today.getHours() +
+          ":" +
+          today.getMinutes() +
+          ":" +
+          today.getSeconds();
+        setIsSubmitting(true);
+        const orderResult = collection(db, "specialOrders");
+        addDoc(orderResult, {
+          specialOrder: {
+            name: values.name,
+            quantity: values.quantity,
+            describtion: values.describtion,
+          },
+          dataUser: {
+            firstName: dataUser.firstName,
+            lastName: dataUser.lastName,
+            firstAddress: dataUser.firstAddress,
+            secondAddress: dataUser.secondAddress,
+            phoneNumber: dataUser.phoneNumber,
+            email: dataUser.email,
+            uid: dataUser.uid,
+          },
+          status: "وضع الانتظار",
+          orderTime: time,
+          orderDate: date,
+        })
+          .then(function () {
+            Alert.alert("تم الأرسال", "تم ارسال الطلب بنجاح", [
+              { text: "حسناً" },
+            ]);
+            setIsSubmitting(false);
+          })
+          .catch(function () {
+            Alert.alert("خطأ", "خطأ في الخدمة", [{ text: "حسناً" }]);
+            setIsSubmitting(false);
+          });
+        setIsSubmitting(false);
+      }}
       validate={(values) => {
         const errors = {};
         const nameArabicRegex = /^[\u0621-\u064A\u0660-\u0669 ]+$/i;
@@ -73,7 +131,7 @@ const SpecialOrder = ({ navigation, route }) => {
         return errors;
       }}
     >
-      {({ handleChange, handleBlur, handleSubmit, isSubmitting, values }) => (
+      {({ handleChange, handleBlur, handleSubmit, values }) => (
         <AuthLayout
           title="طلبية خاصة"
           subtitle=" اطلب اي وجبة تحتاجها غير موجودة بقائمة الوجبات "
@@ -154,28 +212,47 @@ const SpecialOrder = ({ navigation, route }) => {
                 </View>
               }
             />
-            <TextButton
-              label="اطلب الان"
-              buttonContainerStyle={{
-                height: 55,
-                alignItems: "center",
-                marginTop: SIZES.padding,
-                borderRadius: SIZES.radius,
-                backgroundColor: isVerythingOk(
-                  values.name,
-                  values.quantity,
-                  values.describtion
-                )
-                  ? COLORS.primary
-                  : COLORS.transparentPrimray,
-              }}
-              onPress={handleSubmit}
-              disabled={
-                isVerythingOk(values.name, values.quantity, values.describtion)
-                  ? false
-                  : true || isSubmitting
-              }
-            />
+            {currentUser ? (
+              <TextButton
+                label="اطلب الان"
+                buttonContainerStyle={{
+                  height: 55,
+                  alignItems: "center",
+                  marginTop: SIZES.padding,
+                  borderRadius: SIZES.radius,
+                  backgroundColor:
+                    isSubmitting ||
+                    !isVerythingOk(
+                      values.name,
+                      values.quantity,
+                      values.describtion
+                    )
+                      ? COLORS.transparentPrimray
+                      : COLORS.primary,
+                }}
+                onPress={handleSubmit}
+                disabled={
+                  isSubmitting ||
+                  !isVerythingOk(
+                    values.name,
+                    values.quantity,
+                    values.describtion
+                  )
+                }
+              />
+            ) : (
+              <TextButton
+                label="سجل دخولك اولا"
+                buttonContainerStyle={{
+                  height: 55,
+                  alignItems: "center",
+                  marginTop: SIZES.padding,
+                  borderRadius: SIZES.radius,
+                  backgroundColor: COLORS.primary,
+                }}
+                onPress={() => navigation.navigate("SignIn")}
+              />
+            )}
           </View>
         </AuthLayout>
       )}

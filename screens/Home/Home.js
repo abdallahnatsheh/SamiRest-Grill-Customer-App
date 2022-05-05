@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -6,55 +6,61 @@ import {
   Image,
   TextInput,
   FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  RefreshControl,
 } from "react-native";
 import { FONTS, COLORS, SIZES, dummyData, icons } from "../../constants";
 import { HorizontalFoodCard, VerticalFoodCard } from "../../Components";
+import { useAuth } from "../../context/AuthContext";
+import shopContext from "../../context/shop-context";
+
 const Home = ({ navigation }) => {
+  const { currentUser, dataUser } = useAuth();
+  const context = useContext(shopContext);
+
   //to track select category
   //const [selectCatId, setSelectCatId] = React.useState(1);
   //track selected menu
   //const [selectMenuType, setSelectMenuType] = React.useState(1);
-  //main menu list
-  const [mainMenuList, setMainMenuList] = React.useState(dummyData.menu);
   //to show menu list
   const [menuList, setMenuList] = React.useState([]);
   //deals list
   const [dealList, setDealList] = React.useState([]);
   //daily deals menu list
   const [popular, setPopular] = React.useState([]);
-  //show filte modal
-  const [showFilterModal, setShowFilterModal] = React.useState(false);
+
   //to track selection of category
   React.useEffect(() => {
     //retrive popular list
-    let tempDailyDealsList = mainMenuList.find(
-      (a) => a.deals.enabled && a.deals.dailyDealEnable == true
+    let tempDailyDealsList = context.products.filter(
+      (a) => (a.deals.enabled && a.deals.dailyDealEnable) == true
     );
     let dailyDealsList =
-      tempDailyDealsList.length >= 3
-        ? tempDailyDealsList.sort(() => 0.5 - Math.random()).slice(0, 3)
+      [tempDailyDealsList].length >= 3
+        ? tempDailyDealsList.sort(() => 0.5 - Math.random())
         : tempDailyDealsList;
 
     //retrive the deals list  menu
-    let teampDealsList = mainMenuList.find(
+    let teampDealsList = context.products.filter(
       (a) => a.deals.enabled && !a.deals.dailyDealEnable == true
     );
     // select three random meals from list if length bigger or equal to three items
     let dealsList =
-      teampDealsList.length >= 3
-        ? teampDealsList.sort(() => 0.5 - Math.random()).slice(0, 3)
+      [teampDealsList].length >= 3
+        ? teampDealsList.sort(() => 0.5 - Math.random())
         : teampDealsList;
 
     // select three random meals from list if length bigger or equal to three items
     let selectedMenu =
-      mainMenuList.length >= 3
-        ? mainMenuList.sort(() => 0.5 - Math.random()).slice(0, 3)
-        : mainMenuList;
+      context.products.length >= 3
+        ? context.products.sort(() => 0.5 - Math.random()).slice(0, 3)
+        : context.products;
 
     //set popular list based on category id
-    setPopular([dailyDealsList]);
+    setPopular(dailyDealsList.slice(0, 3));
     //set the recommended menu based on categoryId
-    setDealList([dealsList]);
+    setDealList(dealsList.slice(0, 3));
     //set menu list
     setMenuList(selectedMenu);
   }, []);
@@ -84,44 +90,7 @@ const Home = ({ navigation }) => {
       </View>
     );
   };
-  function renderSearch() {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          height: 40,
-          alignItems: "center",
-          marginHorizontal: SIZES.padding,
-          marginVertical: SIZES.base,
-          paddingHorizontal: SIZES.radius,
-          borderRadius: SIZES.radius,
-          backgroundColor: COLORS.lightGray2,
-        }}
-      >
-        {/**FILTER BTN */}
-        <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-          <Image
-            source={icons.filter}
-            style={{ height: 20, width: 20, tintColor: COLORS.black }}
-          />
-        </TouchableOpacity>
-        {/**TEXT INPUT */}
-        <TextInput
-          style={{
-            flex: 1,
-            marginRight: SIZES.radius,
-            ...FONTS.body3,
-            textAlign: "right",
-          }}
-          placeholder="ابحث عن وجبة ..."
-        />
-        <Image
-          source={icons.search}
-          style={{ height: 20, width: 20, tintColor: COLORS.black }}
-        />
-      </View>
-    );
-  }
+
   function renderMenuTypes() {
     return (
       <Section
@@ -151,9 +120,9 @@ const Home = ({ navigation }) => {
                   alignItems: "center",
                 }}
                 imageStyle={{
-                  marginTop: 35,
                   height: 150,
                   width: 150,
+                  alignItems: "center",
                 }}
                 item={item}
                 onPress={() =>
@@ -264,61 +233,116 @@ const Home = ({ navigation }) => {
               tintColor: COLORS.primary,
             }}
           />
-          <Text style={{ ...FONTS.h3 }}>{dummyData?.myProfile?.address}</Text>
+          <Text style={{ ...FONTS.h3 }}>
+            {dataUser.firstAddress && dataUser.secondAddress
+              ? dataUser.firstAddress + "," + dataUser.secondAddress
+              : "قم بادخال معلوماتك حتى تتمكن من الطلب"}
+          </Text>
         </TouchableOpacity>
       </View>
     );
   }
+  const [refreshing, setRefreshing] = React.useState(false);
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    navigation.replace("Home");
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
   return (
     <View
       style={{
         flex: 1,
       }}
     >
-      {/**MENU LIST  */}
-      <FlatList
-        data={menuList}
-        keyExtractor={(item) => `${item.id}`}
-        showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View>
-            {/**DELIVERY ADDRESS SECTION */}
-            {renderDeliveryto()}
+      {popular && dealList && menuList ? (
+        <FlatList
+          data={menuList}
+          extraData={dataUser}
+          keyExtractor={(item) => `${item.id}`}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListHeaderComponent={
+            <View>
+              {/**DELIVERY ADDRESS SECTION */}
+              {renderDeliveryto()}
 
-            {/**food category */}
-            {/*renderFoodCategories()*/}
+              {/**food category */}
+              {/*renderFoodCategories()*/}
 
-            {/**DAILY DEALS SECTION */}
-            {renderDailyDeals()}
-            {/**RECOMMENDED SECTION */}
-            {renderDeals()}
-            {/**Menu Types */}
-            {renderMenuTypes()}
-          </View>
-        }
-        renderItem={({ item, index }) => {
-          return (
-            <HorizontalFoodCard
-              containerStyle={{
-                height: 130,
-                alignItems: "center",
-                marginHorizontal: SIZES.padding,
-                marginBottom: SIZES.radius,
-              }}
-              imageStyle={{
-                marginTop: 20,
-                height: 110,
-                width: 110,
-              }}
-              item={item}
-              onPress={() => navigation.navigate("FoodDetail", { item: item })}
-            />
-          );
-        }}
-        ListFooterComponent={<View style={{ height: 200 }} />}
-      />
+              {/**DAILY DEALS SECTION */}
+              {renderDailyDeals()}
+              {/**RECOMMENDED SECTION */}
+              {renderDeals()}
+              {/**Menu Types */}
+              {renderMenuTypes()}
+            </View>
+          }
+          renderItem={({ item, index }) => {
+            return (
+              <HorizontalFoodCard
+                containerStyle={{
+                  height: 130,
+                  alignItems: "center",
+                  marginHorizontal: SIZES.padding,
+                  marginBottom: SIZES.radius,
+                }}
+                imageStyle={{
+                  marginTop: 20,
+                  height: 110,
+                  width: 110,
+                }}
+                item={item}
+                onPress={() =>
+                  navigation.navigate("FoodDetail", { item: item })
+                }
+              />
+            );
+          }}
+          ListFooterComponent={<View style={{ height: 200 }} />}
+          ListEmptyComponent={
+            <View>
+              <TouchableOpacity
+                onPress={() => {
+                  onRefresh();
+                }}
+              >
+                <Text
+                  style={{
+                    textAlign: "center",
+                    justifyContent: "center",
+                    padding: 10,
+                    color: COLORS.primary,
+                    ...FONTS.h4,
+                  }}
+                >
+                  اضغط هنا للتحديث
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
+        />
+      ) : (
+        <View style={[styles.container, styles.horizontal]}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      )}
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+  },
+});
 export default Home;

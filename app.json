@@ -2,7 +2,7 @@
   "expo": {
     "name": "samiRestGrill",
     "slug": "samiRestGrill-app",
-    "version": "1.0.1",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon/drawable-xxxhdpi/icon.png",
     "splash": {
@@ -17,9 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you choose your personal profile picture.",
-        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you choose your personal profile picture."
       }
     },
     "android": {
@@ -29,12 +27,18 @@
       },
       "versionCode": 1,
       "permissions": [
-        "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.RECORD_AUDIO"
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
       ],
-      "package": "com.abdallahna.samiRestGrillapp"
+      "package": "com.abdallahna.samiRestGrillapp",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC-xrngxDoq1VuKpqkinK46qoG9EG4-WpA"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/playstore.png"

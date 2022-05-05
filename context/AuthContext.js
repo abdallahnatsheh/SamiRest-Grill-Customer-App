@@ -8,7 +8,7 @@ import {
   sendEmailVerification,
   onAuthStateChanged,
 } from "firebase/auth";
-import { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { auth, db } from "../Firebase/firebase.Config";
 import {
   query,
@@ -18,9 +18,9 @@ import {
   doc,
   setDoc,
 } from "firebase/firestore";
-import { NotificationManager } from "react-notifications";
-import { useNavigate } from "react-router-dom";
-
+//import { NotificationManager } from "react-notifications";
+import * as RootNavigation from "../navigation/rootNavigation";
+import { Alert } from "react-native";
 //this authentication context all the magic happen here
 //create context and create google provider
 const authContext = createContext();
@@ -36,7 +36,6 @@ const AuthContext = ({ children }) => {
   //contains user personal data
   const [dataUser, setdataUser] = useState([]);
 
-  const navigate = useNavigate();
   //create account and send verification email to be verified
   const signUp = async (email, password) => {
     try {
@@ -47,21 +46,22 @@ const AuthContext = ({ children }) => {
         authProvider: "local",
         email,
       });
-      sendEmailVerification(auth.currentUser).then(() => navigate("/"));
+      sendEmailVerification(auth.currentUser);
+      RootNavigation.navigate("Home");
     } catch (error) {
       console.error(error.code);
       switch (error.code) {
         case "auth/email-already-in-use":
-          NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);
+          Alert.alert("خطأ", "الإيميل مستخدم بالفعل", [{ text: "حسناً" }]);
           break;
         case "auth/wrong-password":
-          NotificationManager.error("الايميل او كلمة السر خطأ", "خطأ", 5000);
+          Alert.alert("خطأ", "الايميل او كلمة السر خطأ", [{ text: "حسناً" }]);
           break;
         case "auth/user-not-found":
-          NotificationManager.error("المستخدم غير مسجل", "خطأ", 5000);
+          Alert.alert("خطأ", "المستخدم غير مسجل", [{ text: "حسناً" }]);
           break;
         default:
-          NotificationManager.error("خطأ في الخدمة", "خطأ", 5000);
+          Alert.alert("خطأ", "خطأ في الخدمة", [{ text: "حسناً" }]);
           break;
       }
     }
@@ -69,31 +69,28 @@ const AuthContext = ({ children }) => {
   //login with email and password , it first sign out the user if he is login then sign in
   const login = async (email, password) => {
     try {
-      if (currentUser) {
-        signOut(auth).then(setCurrentUser(null));
-
-        await signInWithEmailAndPassword(auth, email, password).then(() =>
-          navigate("/")
-        );
-      } else {
-        await signInWithEmailAndPassword(auth, email, password).then(() =>
-          navigate("/")
-        );
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      RootNavigation.navigate("Home");
     } catch (error) {
-      console.error(error.code);
       switch (error.code) {
         case "auth/email-already-in-use":
-          NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);
+          Alert.alert("خطأ", "الإيميل مستخدم بالفعل", [{ text: "حسناً" }]);
           break;
         case "auth/wrong-password":
-          NotificationManager.error("الايميل او كلمة السر خطأ", "خطأ", 5000);
+          Alert.alert("خطأ", "الايميل او كلمة السر خطأ", [{ text: "حسناً" }]);
           break;
         case "auth/user-not-found":
-          NotificationManager.error("المستخدم غير مسجل", "خطأ", 5000);
+          Alert.alert("خطأ", "المستخدم غير مسجل", [{ text: "حسناً" }]);
+        case "auth/too-many-requests":
+          Alert.alert(
+            "خطأ",
+            "عدد كبير من محاولات تسجيل الدخول , حاول في وقت لاحق",
+            [{ text: "حسناً" }]
+          );
           break;
         default:
-          NotificationManager.error("خطأ في الخدمة", "خطأ", 5000);
+          Alert.alert("خطأ", "خطأ في الخدمة", [{ text: "حسناً" }]);
+
           break;
       }
     }
@@ -113,52 +110,52 @@ const AuthContext = ({ children }) => {
           email: user.email,
         });
       }
-      navigate("/");
+      //navigate("/");
     } catch (error) {
       console.error(error);
       switch (error.code) {
         case "auth/email-already-in-use":
-          NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);
+          // NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);
           break;
         case "auth/wrong-password":
-          NotificationManager.error("الايميل او كلمة السر خطأ", "خطأ", 5000);
+          //NotificationManager.error("الايميل او كلمة السر خطأ", "خطأ", 5000);
           break;
         case "auth/user-not-found":
-          NotificationManager.error("المستخدم غير مسجل", "خطأ", 5000);
+          //NotificationManager.error("المستخدم غير مسجل", "خطأ", 5000);
           break;
         case "auth/popup-closed-by-user":
-          NotificationManager.error("المستخدم  اغلق التسجيل", "خطأ", 5000);
+          //NotificationManager.error("المستخدم  اغلق التسجيل", "خطأ", 5000);
           break;
         default:
-          NotificationManager.error("خطأ في الخدمة", "خطأ", 5000);
+          //NotificationManager.error("خطأ في الخدمة", "خطأ", 5000);
           break;
       }
     }
   };
 
   //log out simple and easy
-  const logout = () => {
-    signOut(auth).then(navigate("/"));
+  const logout = async () => {
+    await signOut(auth);
+    setCurrentUser(null);
+    setdataUser([]);
   };
   // it will send password reset mail
   const resetPassword = async (email) => {
     try {
       await sendPasswordResetEmail(auth, email);
+      Alert.alert("تم ارسال الطلب", "سيصلك ايميل لتغيير كلمة السر", [
+        { text: "حسناً" },
+      ]);
     } catch (error) {
       switch (error.code) {
-        case "auth/email-already-in-use":
-          NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);
-          break;
-        case "auth/missing-email":
+        case "auth/invalid-email":
+          Alert.alert("خطأ", "الايميل غير صالح", [{ text: "حسناً" }]);
           break;
         case "auth/user-not-found":
-          NotificationManager.error("المستخدم غير مسجل", "خطأ", 5000);
-          break;
-        case "auth/popup-closed-by-user":
-          NotificationManager.error("المستخدم  اغلق التسجيل", "خطأ", 5000);
+          Alert.alert("خطأ", "المستخدم غير مسجل", [{ text: "حسناً" }]);
           break;
         default:
-          NotificationManager.error("خطأ في الخدمة", "خطأ", 5000);
+          Alert.alert("خطأ", "خطأ في الخدمة", [{ text: "حسناً" }]);
           break;
       }
     }
@@ -166,12 +163,14 @@ const AuthContext = ({ children }) => {
   ///hook to manage logged user data and if he is logged or not, changed if the user changed
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
-      const q = user
-        ? query(collection(db, "users"), where("uid", "==", user?.uid))
-        : "";
-      const querySnapshot = q ? await getDocs(q) : "";
-      setdataUser(querySnapshot ? querySnapshot.docs[0]?.data() : []);
-      setCurrentUser(user);
+      if (user) {
+        const q = user
+          ? query(collection(db, "users"), where("uid", "==", user?.uid))
+          : "";
+        const querySnapshot = q ? await getDocs(q) : "";
+        setdataUser(querySnapshot ? querySnapshot.docs[0]?.data() : []);
+        setCurrentUser(user);
+      }
     });
   }, []);
 

@@ -8,13 +8,28 @@ import {
 } from "../../Components";
 import { FONTS, COLORS, SIZES, icons, constants } from "../../constants";
 
-const DeliveryStatus = ({ navigation }) => {
+const DeliveryStatus = ({ navigation, route }) => {
+  const { orderItem } = route.params;
+
   //KEEP TRACKING STATE VALUE
-  const [currentState, setCurrentState] = React.useState(2);
+  const [currentState, setCurrentState] = React.useState(getStatus());
+  function getStatus() {
+    if (orderItem.status == "تم التوصيل") {
+      return 3;
+    } else if (orderItem.status == "قيد التوصيل") {
+      return 2;
+    } else if (orderItem.status == "وضع الانتظار") {
+      return 0;
+    } else if (orderItem.status == "قيد الطبخ") {
+      return 1;
+    } else if (orderItem.status == "طلب جاهز") {
+      return 2;
+    }
+  }
   function renderHeader() {
     return (
       <Header
-        title="DELIVERY STATUS"
+        title="حالة الطلب"
         containerStyle={{
           height: 50,
           marginHorizontal: SIZES.padding,
@@ -31,10 +46,10 @@ const DeliveryStatus = ({ navigation }) => {
         <Text
           style={{ textAlign: "center", color: COLORS.gray, ...FONTS.body4 }}
         >
-          Estimated Delivery
+          تاريخ ووقت الطلبية
         </Text>
         <Text style={{ textAlign: "center", ...FONTS.h2 }}>
-          SEPT 2021 / 12:30PM
+          {orderItem.time + "/" + orderItem.date}
         </Text>
       </View>
     );
@@ -61,120 +76,279 @@ const DeliveryStatus = ({ navigation }) => {
             paddingHorizontal: SIZES.padding,
           }}
         >
-          <Text style={{ ...FONTS.h3 }}>Track Order</Text>
-          <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>ID324DF344</Text>
+          <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>
+            {orderItem.id}
+          </Text>
+          <Text style={{ ...FONTS.h3 }}>رمز تعريفي</Text>
         </View>
         <LineDivider lineStyle={{ backgroundColor: COLORS.lightGray2 }} />
-        <View
-          style={{ marginTop: SIZES.padding, paddingHorizontal: SIZES.padding }}
-        >
-          {constants.track_order_status.map((item, index) => {
-            return (
-              <View key={`StatusList-${index}`}>
+        {orderItem.orderType == "deliver" && (
+          <View
+            style={{
+              marginTop: SIZES.padding,
+              paddingHorizontal: SIZES.padding,
+            }}
+          >
+            {constants.track_order_status.map((item, index) => {
+              return (
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginVertical: -5,
-                  }}
+                  key={`StatusList-${index}`}
+                  style={{ flexWrap: "wrap-reverse" }}
                 >
-                  <Image
-                    source={icons.check_circle}
+                  <View
                     style={{
-                      width: 40,
-                      height: 40,
-                      tintColor:
-                        index <= currentState
-                          ? COLORS.primary
-                          : COLORS.lightGray1,
+                      flexDirection: "row",
+                      flexWrap: "wrap-reverse",
+                      alignItems: "center",
+                      marginVertical: -5,
                     }}
-                  />
-                  <View style={{ marginLeft: SIZES.radius }}>
-                    <Text style={{ ...FONTS.h3 }}>{item.title}</Text>
-                    <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
-                      {item.sub_title}
-                    </Text>
+                  >
+                    <View style={{ marginRight: SIZES.radius }}>
+                      <Text style={{ ...FONTS.h3 }}>{item.title}</Text>
+                      <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
+                        {item.sub_title}
+                      </Text>
+                    </View>
+                    <Image
+                      source={icons.check_circle}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        tintColor:
+                          index <= currentState
+                            ? COLORS.primary
+                            : COLORS.lightGray1,
+                      }}
+                    />
                   </View>
+                  {/**if we are not on the last item we will render the line  */}
+                  {index < constants.track_order_status.length - 1 && (
+                    <View style={{ flexWrap: "wrap-reverse" }}>
+                      {index < currentState && (
+                        <View
+                          style={{
+                            height: 50,
+                            width: 3,
+                            marginLeft: 18,
+                            backgroundColor: COLORS.primary,
+                            zIndex: -1,
+                          }}
+                        />
+                      )}
+                      {index >= currentState && (
+                        <Image
+                          source={icons.dotted_line}
+                          resizeMode="cover"
+                          style={{
+                            height: 50,
+                            width: 4,
+                            marginLeft: 17,
+                          }}
+                        />
+                      )}
+                    </View>
+                  )}
                 </View>
-                {/**if we are not on the last item we will render the line  */}
-                {index < constants.track_order_status.length - 1 && (
-                  <View>
-                    {index < currentState && (
-                      <View
-                        style={{
-                          height: 50,
-                          width: 3,
-                          marginLeft: 18,
-                          backgroundColor: COLORS.primary,
-                          zIndex: -1,
-                        }}
-                      />
-                    )}
-                    {index >= currentState && (
-                      <Image
-                        source={icons.dotted_line}
-                        resizeMode="cover"
-                        style={{
-                          height: 50,
-                          width: 4,
-                          marginLeft: 17,
-                        }}
-                      />
-                    )}
+              );
+            })}
+          </View>
+        )}
+        {orderItem.orderType != "deliver" && (
+          <View
+            style={{
+              marginTop: SIZES.padding,
+              paddingHorizontal: SIZES.padding,
+            }}
+          >
+            {constants.track_special_order_status.map((item, index) => {
+              return (
+                <View
+                  key={`StatusList-${index}`}
+                  style={{ flexWrap: "wrap-reverse" }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginVertical: -5,
+                    }}
+                  >
+                    <View style={{ marginRight: SIZES.radius }}>
+                      <Text style={{ ...FONTS.h3 }}>{item.title}</Text>
+                      <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
+                        {item.sub_title}
+                      </Text>
+                    </View>
+                    <Image
+                      source={icons.check_circle}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        tintColor:
+                          index <= currentState
+                            ? COLORS.primary
+                            : COLORS.lightGray1,
+                      }}
+                    />
                   </View>
-                )}
-              </View>
-            );
-          })}
-        </View>
+                  {/**if we are not on the last item we will render the line  */}
+                  {index < constants.track_special_order_status.length - 1 && (
+                    <View style={{ flexWrap: "wrap-reverse" }}>
+                      {index < currentState && (
+                        <View
+                          style={{
+                            height: 50,
+                            width: 3,
+                            marginLeft: 18,
+                            backgroundColor: COLORS.primary,
+                            zIndex: -1,
+                          }}
+                        />
+                      )}
+                      {index >= currentState && (
+                        <Image
+                          source={icons.dotted_line}
+                          resizeMode="cover"
+                          style={{
+                            height: 50,
+                            width: 4,
+                            marginLeft: 17,
+                          }}
+                        />
+                      )}
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
       </View>
     );
   }
   function renderFooter() {
     return (
       <View style={{ marginTop: SIZES.radius, marginBottom: SIZES.padding }}>
-        {currentState < constants.track_order_status.length - 1 && (
-          <View style={{ flexDirection: "row", height: 55 }}>
-            {/** cancel button */}
-            <TextButton
-              buttonContainerStyle={{
-                width: "40%",
-                borderRadius: SIZES.base,
-                backgroundColor: COLORS.lightGray2,
-              }}
-              label="Cancel"
-              labelStyle={{ color: COLORS.primary }}
-              onPress={() => navigation.navigate("Home")}
-            />
-            {/**mapView button */}
-            <TextIconButton
-              containerStyle={{
-                flex: 1,
-                marginLeft: SIZES.radius,
-                borderRadius: SIZES.base,
-                backgroundColor: COLORS.primary,
-              }}
-              label="Map View"
-              labelStyle={{ color: COLORS.white, ...FONTS.h3 }}
-              icon={icons.map}
-              iconPosition="LEFT"
-              iconStyle={{
-                width: 25,
-                height: 25,
-                marginRight: SIZES.base,
-                tintColor: COLORS.white,
-              }}
-              onPress={() => navigation.navigate("Map")}
-            />
-          </View>
-        )}
-        {currentState >= constants.track_order_status.length - 1 && (
-          <TextButton
-            buttonContainerStyle={{ height: 55, borderRadius: SIZES.base }}
-            label="DONE"
-            onPress={() => navigation.navigate("Home")}
-          />
-        )}
+        {orderItem.orderType == "deliver" &&
+          currentState < constants.track_order_status.length - 1 && (
+            <View style={{ flexDirection: "row", height: 55 }}>
+              {/** cancel button */}
+              <TextButton
+                buttonContainerStyle={{
+                  width: "40%",
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.lightGray2,
+                }}
+                label="تم"
+                labelStyle={{ color: COLORS.primary }}
+                onPress={() => navigation.goBack()}
+              />
+              {/**mapView button */}
+              <TextIconButton
+                containerStyle={{
+                  flex: 1,
+                  marginLeft: SIZES.radius,
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.primary,
+                }}
+                label="قائمة الطلبية"
+                labelStyle={{ color: COLORS.white, ...FONTS.h3 }}
+                onPress={() =>
+                  navigation.navigate("OrderList", { orderItem: orderItem })
+                }
+              />
+            </View>
+          )}
+        {orderItem.orderType == "deliver" &&
+          currentState >= constants.track_order_status.length - 1 && (
+            <View style={{ flexDirection: "row", height: 55 }}>
+              {/** cancel button */}
+              <TextButton
+                buttonContainerStyle={{
+                  width: "40%",
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.primary,
+                }}
+                label="تم"
+                labelStyle={{ color: COLORS.white, ...FONTS.h3 }}
+                onPress={() => navigation.goBack()}
+              />
+              {/**mapView button */}
+              <TextIconButton
+                containerStyle={{
+                  flex: 1,
+                  marginLeft: SIZES.radius,
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.lightGray2,
+                }}
+                label="قائمة الطلبية"
+                labelStyle={{ color: COLORS.primary }}
+                onPress={() =>
+                  navigation.navigate("OrderList", { orderItem: orderItem })
+                }
+              />
+            </View>
+          )}
+        {orderItem.orderType != "deliver" &&
+          currentState >= constants.track_special_order_status.length - 1 && (
+            <View style={{ flexDirection: "row", height: 55 }}>
+              {/** cancel button */}
+              <TextButton
+                buttonContainerStyle={{
+                  width: "40%",
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.primary,
+                }}
+                label="تم"
+                labelStyle={{ color: COLORS.white, ...FONTS.h3 }}
+                onPress={() => navigation.goBack()}
+              />
+              {/**mapView button */}
+              <TextIconButton
+                containerStyle={{
+                  flex: 1,
+                  marginLeft: SIZES.radius,
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.lightGray2,
+                }}
+                label="قائمة الطلبية"
+                labelStyle={{ color: COLORS.primary }}
+                onPress={() =>
+                  navigation.navigate("OrderList", { orderItem: orderItem })
+                }
+              />
+            </View>
+          )}
+        {orderItem.orderType != "deliver" &&
+          currentState < constants.track_special_order_status.length - 1 && (
+            <View style={{ flexDirection: "row", height: 55 }}>
+              {/** cancel button */}
+              <TextButton
+                buttonContainerStyle={{
+                  width: "40%",
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.lightGray2,
+                }}
+                label="تم"
+                labelStyle={{ color: COLORS.primary }}
+                onPress={() => navigation.goBack()}
+              />
+              {/**mapView button */}
+              <TextIconButton
+                containerStyle={{
+                  flex: 1,
+                  marginLeft: SIZES.radius,
+                  borderRadius: SIZES.base,
+                  backgroundColor: COLORS.primary,
+                }}
+                label="قائمة الطلبية"
+                labelStyle={{ color: COLORS.white, ...FONTS.h3 }}
+                onPress={() =>
+                  navigation.navigate("OrderList", { orderItem: orderItem })
+                }
+              />
+            </View>
+          )}
       </View>
     );
   }

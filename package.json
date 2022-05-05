@@ -1,11 +1,10 @@
 {
   "name": "samirestgrill-app",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
@@ -13,6 +12,7 @@
     "@ptomasroos/react-native-multi-slider": "^2.2.2",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "^4.0.0",
+    "@react-native-google-signin/google-signin": "^7.2.2",
     "@react-navigation/drawer": "^6.4.1",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/stack": "^6.2.1",
@@ -23,7 +23,7 @@
     "expo-location": "~14.0.1",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
-    "expo-updates": "~0.11.6",
+    "expo-updates": "~0.11.7",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",
     "moment": "^2.29.3",
@@ -46,7 +46,11 @@
     "react-redux": "^7.2.8",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "expo-google-sign-in": "~10.1.0",
+    "expo-web-browser": "~10.1.0",
+    "expo-auth-session": "~3.5.0",
+    "expo-random": "~12.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

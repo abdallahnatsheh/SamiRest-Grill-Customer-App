@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -7,28 +7,25 @@ import {
   TextInput,
   FlatList,
 } from "react-native";
-import {
-  FONTS,
-  COLORS,
-  SIZES,
-  dummyData,
-  icons,
-  constants,
-} from "../../constants";
+import { FONTS, COLORS, SIZES, images, icons } from "../../constants";
 import { Header, HorizontalFoodCard } from "../../Components";
 import FilterModal from "../Home/FilterModal";
+import shopContext from "../../context/shop-context";
+import { useAuth } from "../../context/AuthContext";
 
 const DailyDeals = ({ navigation }) => {
+  const context = useContext(shopContext);
+  const { currentUser, dataUser } = useAuth();
   const [mainDailyDeals, setMainDailyDeals] = React.useState([]);
   const [menuList, setMenuList] = React.useState([]);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
 
   React.useEffect(() => {
-    const tempmainDailyDeals = dummyData.menu.find(
+    const tempmainDailyDeals = context.products.filter(
       (a) => a.deals.enabled && a.deals.dailyDealEnable == true
     );
-    setMainDailyDeals([tempmainDailyDeals]);
-    setMenuList([tempmainDailyDeals]);
+    setMainDailyDeals(tempmainDailyDeals);
+    setMenuList(tempmainDailyDeals);
   }, []);
 
   function renderSearch() {
@@ -114,10 +111,18 @@ const DailyDeals = ({ navigation }) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => navigation.navigate("MyAccount")}
+            onPress={() =>
+              currentUser
+                ? navigation.navigate("MyAccount")
+                : navigation.navigate("SignIn")
+            }
           >
             <Image
-              source={dummyData?.myProfile?.profile_image}
+              source={
+                dataUser.personalImage
+                  ? { uri: dataUser?.personalImage }
+                  : images.profile
+              }
               style={{ width: 40, height: 40, borderRadius: SIZES.radius }}
             />
           </TouchableOpacity>

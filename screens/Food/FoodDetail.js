@@ -25,6 +25,7 @@ import {
   StapperInput,
 } from "../../Components";
 import shopContext from "../../context/shop-context";
+import { utils } from "../../utils";
 
 const FoodDetail = ({ navigation, route }) => {
   ///STATE TO CHECK THE SELCTED MEAL SIZE
@@ -86,9 +87,17 @@ const FoodDetail = ({ navigation, route }) => {
     let order = {
       ...item,
       quantity: qty,
-      types: item.price.types.length > 0 ? selectedSize : [],
+      types:
+        item.price.types.length > 0
+          ? selectedSize
+          : { name: item.name, value: item.price.defaultPrice.value },
       addons: selectedAddon,
-      totalPrice: handleFinalPrice(selectedAddon, selectedSize, qty),
+      totalPrice: utils.handleFinalPrice(
+        item,
+        selectedAddon,
+        selectedSize,
+        qty
+      ),
     };
     return order;
   };
@@ -153,9 +162,9 @@ const FoodDetail = ({ navigation, route }) => {
         >
           {/**FOOD IMAGE */}
           <Image
-            source={item?.image}
+            source={{ uri: item?.img }}
             resizeMode="contain"
-            style={{ height: 170, width: "100%" }}
+            style={{ height: "100%", width: "100%", top: -20 }}
           />
         </View>
         {/**FOOD INFO SECTION */}
@@ -271,12 +280,12 @@ const FoodDetail = ({ navigation, route }) => {
                     label2={item.value + " ₪"}
                     label2Style={{
                       color:
-                        selectedSize == index ? COLORS.white : COLORS.gray2,
+                        selectedSize == index ? COLORS.white : COLORS.black,
                       ...FONTS.body5,
                     }}
                     labelStyle={{
                       color:
-                        selectedSize == index ? COLORS.white : COLORS.gray2,
+                        selectedSize == index ? COLORS.white : COLORS.black,
                       padding: 2,
                       ...FONTS.body5,
                     }}
@@ -344,13 +353,13 @@ const FoodDetail = ({ navigation, route }) => {
                       label2Style={{
                         color: selectedAddon.find((o) => o.name === item.name)
                           ? COLORS.white
-                          : COLORS.gray2,
+                          : COLORS.black,
                         ...FONTS.body5,
                       }}
                       labelStyle={{
                         color: selectedAddon.find((o) => o.name === item.name)
                           ? COLORS.white
-                          : COLORS.gray2,
+                          : COLORS.black,
                         padding: 2,
                         ...FONTS.body5,
                       }}
@@ -400,7 +409,8 @@ const FoodDetail = ({ navigation, route }) => {
           }}
           label2="اضف للسلة"
           label={
-            handleFinalPrice(selectedAddon, selectedSize, qty) + " ₪"
+            utils.handleFinalPrice(item, selectedAddon, selectedSize, qty) +
+            " ₪"
             /*item.price.types.length > 0
               ? (
                   item.price.types[selectedSize].value +

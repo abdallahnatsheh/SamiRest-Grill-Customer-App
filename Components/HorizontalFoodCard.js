@@ -14,7 +14,11 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
       onPress={onPress}
     >
       {/**Image section */}
-      <Image source={item?.image} style={imageStyle} />
+      <Image
+        source={{ uri: item?.img }}
+        style={imageStyle}
+        resizeMode="contain"
+      />
 
       {/**INFO SECTION */}
       <View style={{ flex: 1, paddingRight: 6, paddingTop: 15 }}>
@@ -22,7 +26,9 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
         <Text style={{ ...FONTS.h3, fontSize: 17 }}>{item?.name}</Text>
         {/**info */}
         <Text style={{ ...FONTS.body4, color: COLORS.darkGray2 }}>
-          {item?.info.length < 25 ? item?.info : item?.info.slice(0, 20) + "..."}
+          {item?.info.length < 20
+            ? item?.info
+            : item?.info.slice(0, 15) + "..."}
         </Text>
         {/**price */}
         {item?.deals.enabled ||

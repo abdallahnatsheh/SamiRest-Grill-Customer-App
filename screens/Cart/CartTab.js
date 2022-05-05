@@ -50,7 +50,7 @@ const CartTab = ({ navigation, setSelectedTab }) => {
               onMinus={context.removeProductFromCart.bind(this, data.item)}
             />
             {/*FOOD DETAILS */}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 12 }}>
               <Text style={{ ...FONTS.body3 }}>{data.item.name}</Text>
               {data.item.price.types && (
                 <Text style={{ ...FONTS.body5, color: COLORS.darkGray }}>
@@ -81,13 +81,13 @@ const CartTab = ({ navigation, setSelectedTab }) => {
             {/**FOOD IMAGE */}
             <View style={{ width: 90, height: 100, marginLeft: -10 }}>
               <Image
-                source={data.item.image}
+                source={{ uri: data.item.img }}
                 resizeMode="contain"
                 style={{
                   width: "100%",
                   height: "100%",
                   position: "absolute",
-                  top: 10,
+                  top: -2,
                 }}
               />
             </View>
@@ -141,7 +141,7 @@ const CartTab = ({ navigation, setSelectedTab }) => {
         shippingFee={0.0}
         total={calcFinalPrice()}
         containerStyle={{ paddingBottom: 150 }}
-        onPress={() => navigation.navigate("Success")}
+        onPress={() => navigation.navigate("DeliveryList")}
         onEmpty={() => setSelectedTab(constants.screens.home)}
       />
     </View>

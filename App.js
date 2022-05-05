@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import MainDrawer from "./navigation/MainDrawer";
@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import rootReducer from "./stores/rootReducer";
 import CartContext from "./context/CartContext";
-
+import AuthContext, { useAuth } from "./context/AuthContext";
 //import { useFonts } from "@use-expo/font";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
@@ -22,6 +22,7 @@ import {
   Success,
   AddCard,
   DeliveryStatus,
+  DeliveryList,
   Map,
   DailyDeals,
   MainMenu,
@@ -31,8 +32,12 @@ import {
   NotificationSetting,
   MyAccount,
   MyAccountEdit,
+  Order,
+  Review,
+  MySpecialOrder,
+  OrderList,
 } from "./screens";
-
+import { navigationRef } from "./navigation/rootNavigation";
 const Stack = createStackNavigator();
 const store = createStore(rootReducer, applyMiddleware(thunk));
 const customFonts = {
@@ -94,44 +99,53 @@ const App = () => {
   return (
     <CartContext>
       <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-            initialRouteName={"SignIn"}
-          >
-            <Stack.Screen name="Home" component={MainDrawer} />
-            <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-            <Stack.Screen name="FoodDetail" component={FoodDetail} />
-            <Stack.Screen name="Checkout" component={Checkout} />
-            <Stack.Screen name="MyCart" component={MyCart} />
-            <Stack.Screen
-              name="Success"
-              component={Success}
-              options={{ gestureEnabled: false }}
-            />
-            <Stack.Screen name="AddCard" component={AddCard} />
-            <Stack.Screen
-              name="DeliveryStatus"
-              component={DeliveryStatus}
-              options={{ gestureEnabled: false }}
-            />
-            <Stack.Screen name="MyAccount" component={MyAccount} />
-            <Stack.Screen name="MyAccountEdit" component={MyAccountEdit} />
-            <Stack.Screen name="Map" component={Map} />
-            <Stack.Screen name="DailyDeals" component={DailyDeals} />
-            <Stack.Screen name="MainMenu" component={MainMenu} />
-            <Stack.Screen name="Support" component={Support} />
-            <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen
-              name="NotificationSetting"
-              component={NotificationSetting}
-            />
-          </Stack.Navigator>
+        <NavigationContainer ref={navigationRef}>
+          <AuthContext>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+              initialRouteName={"Home"}
+            >
+              <Stack.Screen name="Home" component={MainDrawer} />
+              <Stack.Screen name="SignIn" component={SignIn} />
+              <Stack.Screen name="SignUp" component={SignUp} />
+              <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+              <Stack.Screen name="FoodDetail" component={FoodDetail} />
+              <Stack.Screen name="Checkout" component={Checkout} />
+              <Stack.Screen name="MyCart" component={MyCart} />
+              <Stack.Screen
+                name="Success"
+                component={Success}
+                options={{ gestureEnabled: false }}
+              />
+              <Stack.Screen name="DeliveryList" component={DeliveryList} />
+              <Stack.Screen name="AddCard" component={AddCard} />
+              <Stack.Screen
+                name="DeliveryStatus"
+                component={DeliveryStatus}
+                options={{ gestureEnabled: false }}
+              />
+              <Stack.Screen name="MyAccount" component={MyAccount} />
+              <Stack.Screen name="MyAccountEdit" component={MyAccountEdit} />
+              <Stack.Screen name="Order" component={Order} />
+              <Stack.Screen name="MySpecialOrder" component={MySpecialOrder} />
+              <Stack.Screen name="OrderList" component={OrderList} />
+
+              <Stack.Screen name="Review" component={Review} />
+
+              <Stack.Screen name="Map" component={Map} />
+              <Stack.Screen name="DailyDeals" component={DailyDeals} />
+              <Stack.Screen name="MainMenu" component={MainMenu} />
+              <Stack.Screen name="Support" component={Support} />
+              <Stack.Screen name="Settings" component={Settings} />
+              <Stack.Screen name="ChangePassword" component={ChangePassword} />
+              <Stack.Screen
+                name="NotificationSetting"
+                component={NotificationSetting}
+              />
+            </Stack.Navigator>
+          </AuthContext>
         </NavigationContainer>
       </Provider>
     </CartContext>

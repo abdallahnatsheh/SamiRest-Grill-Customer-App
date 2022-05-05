@@ -3,6 +3,7 @@ export const REMOVE_PRODUCT = "REMOVE_PRODUCT";
 export const EMPTY_CART = "EMPTY_CART";
 export const REMOVE_IT = "REMOVE_IT";
 export const ADD_IT = "ADD_IT";
+import * as RootNavigation from "../navigation/rootNavigation";
 
 //add meal to cart ,check if existed will increase the quantity if not add it
 const addProductToCart = (product, state) => {
@@ -24,7 +25,7 @@ const addProductToCart = (product, state) => {
     updatedItem.addons = product.addons;
     updatedCart[updatedItemIndex] = updatedItem;
   }
-
+  RootNavigation.navigate("MyCart");
   return { ...state, cart: updatedCart };
 };
 //it will empty the cart after successfull purchase

@@ -36,6 +36,10 @@ const screens = {
   mainMenu: "قائمة الوجبات",
   dailyDeals: "العروض اليومية",
   specialOrders: "الطلبات الخاصة",
+  myorders: "طلباتي",
+  settings: "الاعدادات",
+  support: "الدعم الفني",
+  myspecialorders: "طلباتي الخاصة",
 };
 
 const bottom_tabs = [
@@ -136,28 +140,40 @@ const tags = [
 const track_order_status = [
   {
     id: 1,
-    title: "Order Confirmed",
-    sub_title: "Your order has been received",
+    title: "قائمة الإنتظار",
+    sub_title: "طلبك في قائمة الانتظار حاليا",
   },
   {
     id: 2,
-    title: "Order Prepared",
-    sub_title: "Your order has been prepared",
+    title: "في المطبخ",
+    sub_title: "يتم طبخ طلبك حاليا",
   },
   {
     id: 3,
-    title: "Delivery in Progress",
-    sub_title: "Hang on! Your food is on the way",
+    title: "في الطريق",
+    sub_title: "طلبك في الطريق!",
   },
   {
     id: 4,
-    title: "Delivered",
-    sub_title: "Enjoy your meal!",
+    title: "تم التوصيل",
+    sub_title: "صحتين وعافية,تم توصيل طلبك",
+  },
+];
+const track_special_order_status = [
+  {
+    id: 1,
+    title: "قائمة الإنتظار",
+    sub_title: "طلبك في قائمة الانتظار حاليا",
   },
   {
-    id: 5,
-    title: "Rate Us",
-    sub_title: "Help us improve our service",
+    id: 2,
+    title: "في المطبخ",
+    sub_title: "يتم طبخ طلبك حاليا",
+  },
+  {
+    id: 3,
+    title: "جاهز",
+    sub_title: "طلبك جاهز تعال واستلمه !",
   },
 ];
 
@@ -245,6 +261,7 @@ export default {
   ratings,
   tags,
   track_order_status,
+  track_special_order_status,
   tips,
   gender,
   state,

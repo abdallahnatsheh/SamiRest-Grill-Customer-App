@@ -41,7 +41,7 @@ import MyCard from "./Card/MyCard";
 // Delivery
 import DeliveryStatus from "./Delivery/DeliveryStatus";
 import Map from "./Delivery/Map";
-
+import DeliveryList from "./Delivery/DeliveryList";
 //Support
 import Support from "./Support/Support";
 
@@ -54,6 +54,11 @@ import NotificationSetting from "./Settings/NotificationSetting";
 import MyAccount from "./Account/MyAccount";
 import MyAccountEdit from "./Account/MyAccountEdit";
 
+//order lists
+import Order from "./Order/Order";
+import OrderList from "./Order/OrderList";
+import Review from "./Order/Review";
+import MySpecialOrder from "./Order/MySpecialOrder";
 export {
   MainLayout,
   Support,
@@ -85,4 +90,9 @@ export {
   NotificationSetting,
   MyAccount,
   MyAccountEdit,
+  DeliveryList,
+  Order,
+  Review,
+  MySpecialOrder,
+  OrderList,
 };

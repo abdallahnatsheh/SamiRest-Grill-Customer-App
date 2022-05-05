@@ -9,6 +9,11 @@ const logo_02 = require("../assets/images/logo_02.png");
 const profile = require("../assets/images/profile.png");
 const success = require("../assets/images/success.png");
 const emptyCart = require("../assets/images/emptycart.png");
+const cooking = require("../assets/images/cooking.png");
+const delivering = require("../assets/images/delivering.png");
+const pending = require("../assets/images/pending.png");
+const done = require("../assets/images/done.png");
+
 export default {
   background_01,
   background_02,
@@ -21,4 +26,8 @@ export default {
   profile,
   success,
   emptyCart,
+  cooking,
+  delivering,
+  done,
+  pending,
 };

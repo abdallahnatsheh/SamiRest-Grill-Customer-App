@@ -29,7 +29,7 @@ const hamburger = {
   categories: [1, 2],
   calories: 78,
   isFavourite: true,
-  image: require("../assets/dummyData/hamburger.png"),
+  img: require("../assets/dummyData/hamburger.png"),
   price: {
     addons: [],
     defaultPrice: { enabled: true, value: 15.99 },
@@ -54,7 +54,7 @@ const hotTacos = {
   categories: [1, 3],
   calories: 78,
   isFavourite: false,
-  image: require("../assets/dummyData/hot_tacos.png"),
+  img: require("../assets/dummyData/hot_tacos.png"),
   price: {
     addons: [
       { name: "سيبسيب", value: 2 },
@@ -88,7 +88,7 @@ const vegBiryani = {
   categories: [1, 2, 3],
   calories: 78,
   isFavourite: true,
-  image: require("../assets/dummyData/veg_biryani.png"),
+  img: require("../assets/dummyData/veg_biryani.png"),
   price: {
     addons: [
       { name: "سيبسيب", value: 2 },
@@ -113,7 +113,7 @@ const wrapSandwich = {
   categories: [1, 2],
   calories: 78,
   isFavourite: true,
-  image: require("../assets/dummyData/wrap_sandwich.png"),
+  img: require("../assets/dummyData/wrap_sandwich.png"),
   price: {
     addons: [],
     defaultPrice: { enabled: true, value: 10.99 },

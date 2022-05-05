@@ -25,10 +25,10 @@ const Success = ({ navigation }) => {
         <Image
           source={images.success}
           resizeMode="contain"
-          style={{ width: 150, height: 150 }}
+          style={{ width: 150, height: 150, tintColor: COLORS.primary }}
         />
         <Text style={{ marginTop: SIZES.padding, ...FONTS.h1 }}>
-          Congratulation
+          صحة وعافية
         </Text>
         <Text
           style={{
@@ -38,11 +38,11 @@ const Success = ({ navigation }) => {
             ...FONTS.body3,
           }}
         >
-          Paymnt was Successfully made
+          تم الطلب بنجاح
         </Text>
       </View>
       <TextButton
-        label="Done"
+        label="موافق"
         buttonContainerStyle={{
           height: 55,
           marginTop: SIZES.padding,
@@ -50,7 +50,7 @@ const Success = ({ navigation }) => {
           borderRadius: SIZES.radius,
           backgroundColor: COLORS.primary,
         }}
-        onPress={() => navigation.navigate("DeliveryStatus")}
+        onPress={() => navigation.navigate("Home")}
       />
     </View>
   );

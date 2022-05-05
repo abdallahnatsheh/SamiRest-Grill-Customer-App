@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 
@@ -9,7 +10,8 @@ import {
 } from "../../Components";
 import { COLORS, SIZES, icons } from "../../constants";
 
-const Settings = ({ navigation }) => {
+const Settings = () => {
+  const navigation = useNavigation();
   function renderHeader() {
     return (
       <Header
@@ -183,7 +185,7 @@ const Settings = ({ navigation }) => {
           label="تسجيل الخروج"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
-          onPress={() => navigation.navigate("SignIn")}
+          onPress={() => navigation.replace("SignIn")}
         />
       </View>
     );

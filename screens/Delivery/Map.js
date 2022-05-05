@@ -100,6 +100,7 @@ const Map = ({ navigation, route }) => {
           apikey={constants.GOOGLE_MAP_API_KEY}
           strokeWidth={5}
           strokeColor={COLORS.primary}
+          mode="DRIVING"
           optimizeWaypoints={true}
           onReady={(result) => {
             setDuration(Math.ceil(result.duration));

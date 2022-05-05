@@ -10,11 +10,13 @@ import {
   SIZES,
   constants,
   icons,
+  images,
   dummyData,
 } from "../constants";
 import { MainLayout } from "../screens";
 import { connect } from "react-redux";
 import { setSelectedTab } from "../stores/tab/tabAction";
+import { useAuth } from "../context/AuthContext";
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerItem = ({ label, icon, isFocused, onPress }) => {
@@ -42,6 +44,8 @@ const CustomDrawerItem = ({ label, icon, isFocused, onPress }) => {
   );
 };
 const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
+  const { currentUser, dataUser, logout } = useAuth();
+
   //here we fill the drawer with this custom drawer as we want
   return (
     <DrawerContentScrollView
@@ -73,20 +77,32 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
             alignItems: "center",
           }}
           onPress={() => {
-            navigation.closeDrawer();
-            navigation.navigate("MyAccount");
+            if (currentUser) {
+              navigation.closeDrawer();
+              navigation.navigate("MyAccount");
+            } else {
+              navigation.navigate("SignIn");
+            }
           }}
         >
           <View style={{ marginRight: SIZES.radius }}>
             <Text style={{ color: COLORS.white, ...FONTS.h3 }}>
-              {dummyData.myProfile?.name}
+              {currentUser
+                ? dataUser.firstName
+                  ? dataUser.firstName
+                  : "قم بتعبئة معلوماتك"
+                : "سجل دخولك اولا"}
             </Text>
             <Text style={{ color: COLORS.white, ...FONTS.body4 }}>
               إعدادات الحساب
             </Text>
           </View>
           <Image
-            source={dummyData.myProfile?.profile_image}
+            source={
+              dataUser.personalImage
+                ? { uri: dataUser.personalImage }
+                : images.profile
+            }
             style={{ width: 50, height: 50, borderRadius: SIZES.radius }}
           />
         </TouchableOpacity>
@@ -137,10 +153,28 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
               backgroundColor: COLORS.lightGray1,
             }}
           />
-          <CustomDrawerItem label="تتبع طلبك" icon={icons.location} />
-          <CustomDrawerItem label="الكوبونات" icon={icons.coupon} />
+          {currentUser && (
+            <CustomDrawerItem
+              label={constants.screens.myorders}
+              icon={icons.location}
+              onPress={() => {
+                navigation.closeDrawer();
+                navigation.navigate("Order");
+              }}
+            />
+          )}
+          {currentUser && (
+            <CustomDrawerItem
+              label={constants.screens.myspecialorders}
+              icon={icons.location}
+              onPress={() => {
+                navigation.closeDrawer();
+                navigation.navigate("MySpecialOrder");
+              }}
+            />
+          )}
           <CustomDrawerItem
-            label="الاعدادات"
+            label={constants.screens.settings}
             icon={icons.setting}
             onPress={() => {
               navigation.closeDrawer();
@@ -148,7 +182,7 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
             }}
           />
           <CustomDrawerItem
-            label="الدعم الفني"
+            label={constants.screens.support}
             icon={icons.help}
             onPress={() => {
               navigation.closeDrawer();
@@ -156,13 +190,18 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
             }}
           />
         </View>
-        <View style={{ marginBottom: SIZES.padding }}>
-          <CustomDrawerItem
-            label="تسجيل الخروج"
-            icon={icons.logout}
-            onPress={() => navigation.replace("SignIn")}
-          />
-        </View>
+        {currentUser && (
+          <View style={{ marginBottom: SIZES.padding }}>
+            <CustomDrawerItem
+              label="تسجيل الخروج"
+              icon={icons.logout}
+              onPress={async () => {
+                await logout();
+                navigation.replace("SignIn");
+              }}
+            />
+          </View>
+        )}
       </View>
     </DrawerContentScrollView>
   );

@@ -53,7 +53,7 @@ const MyCart = ({ navigation }) => {
               onMinus={context.removeProductFromCart.bind(this, data.item)}
             />
             {/*FOOD DETAILS */}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 12 }}>
               <Text style={{ ...FONTS.body3 }}>{data.item.name}</Text>
               {data.item.price.types && (
                 <Text style={{ ...FONTS.body5, color: COLORS.darkGray }}>
@@ -84,13 +84,13 @@ const MyCart = ({ navigation }) => {
             {/**FOOD IMAGE */}
             <View style={{ width: 90, height: 100, marginLeft: -10 }}>
               <Image
-                source={data.item.image}
+                source={{ uri: data.item.img }}
                 resizeMode="contain"
                 style={{
                   width: "100%",
                   height: "100%",
                   position: "absolute",
-                  top: 10,
+                  top: -2,
                 }}
               />
             </View>
@@ -184,7 +184,7 @@ const MyCart = ({ navigation }) => {
         subTotal={calcFinalPrice()}
         shippingFee={0.0}
         total={calcFinalPrice()}
-        onPress={() => navigation.replace("Success")}
+        onPress={() => navigation.navigate("DeliveryList")}
         onEmpty={() => navigation.replace("Home")}
       />
     </View>

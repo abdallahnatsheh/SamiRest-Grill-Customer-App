@@ -4,6 +4,7 @@ const { width, height } = Dimensions.get("window");
 export const COLORS = {
   primary: "#790a0a", //orange
   transparentPrimray: "#e39191",
+  transparentPrimary9: "#f5e1e1",
   orange: "#FFA133",
   yellow: "#d28d08",
   lightOrange: "#FFA133",

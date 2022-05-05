@@ -11,6 +11,7 @@ import {
 } from "./reducers";
 //import { useGetMainMenuMeals } from "../Components/firebase/mainMenuHooks/mainMenuHook";
 import useLocalStorage from "../Hooks/useLocalStorage";
+import { useGetMainMenuMeals } from "../Hooks/mainMenuHook";
 //fix cart list to be  saved in cookies for future use , without it will be alot of bugs
 function fixList(list) {
   let temp = [];
@@ -21,8 +22,7 @@ let menuList = [];
 
 const CartContext = (props) => {
   //get menu list from firestore
-  //  const [menuItemsData] = useGetMainMenuMeals();
-  const menuItemsData = [];
+  const [menuItemsData] = useGetMainMenuMeals();
 
   if (menuItemsData.length !== 0) {
     //fix the list into array with id and quantity because firebase uses item.id

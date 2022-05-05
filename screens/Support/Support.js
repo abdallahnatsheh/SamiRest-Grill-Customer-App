@@ -1,12 +1,24 @@
 // Formik x React Native example
 import React from "react";
-import { Button, TextInput, View, Image, TouchableOpacity } from "react-native";
+import {
+  Button,
+  TextInput,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Formik } from "formik";
 import { FormInput, TextButton, Header } from "../../Components";
 import AuthLayout from "../Authentication/AuthLayout";
 import { FONTS, SIZES, COLORS, icons, dummyData } from "../../constants";
+import { useAuth } from "../../context/AuthContext";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../Firebase/firebase.Config";
 
 const Support = ({ navigation, route }) => {
+  const { dataUser } = useAuth();
+
   //these states for form validations
   //meal name errors will be here
   const [nameError, setNameError] = React.useState("");
@@ -16,6 +28,8 @@ const Support = ({ navigation, route }) => {
   const [describtionError, setDescribtionError] = React.useState("");
   //email vallidations errors
   const [emailError, setEmailError] = React.useState("");
+  //isSubmitting check
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   //function to check if everything validate to enable signin
   function isVerythingOk(name, phoneNumber, email, describtion) {
     return (
@@ -76,7 +90,11 @@ const Support = ({ navigation, route }) => {
             onPress={() => navigation.navigate("MyAccount")}
           >
             <Image
-              source={dummyData?.myProfile?.profile_image}
+              source={
+                dataUser?.personalImage
+                  ? { uri: dataUser?.personalImage }
+                  : dummyData?.myProfile?.profile_image
+              }
               style={{ width: 40, height: 40, borderRadius: SIZES.radius }}
             />
           </TouchableOpacity>
@@ -89,7 +107,23 @@ const Support = ({ navigation, route }) => {
           email: "",
           describtion: "",
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values) => {
+          setIsSubmitting(true);
+          const orderResult = collection(db, "cSupport");
+          await addDoc(orderResult, {
+            name: values.name,
+            email: values.email,
+            phone: values.phoneNumber,
+            describtion: values.describtion,
+          })
+            .then(function () {
+              navigation.navigate("Home");
+            })
+            .catch(function () {
+              Alert.alert("خطأ", "خطأ في الخدمة", "خطأ", [{ text: "حسناً" }]);
+            });
+          setIsSubmitting(false);
+        }}
         validate={(values) => {
           const errors = {};
           const nameArabicRegex = /^[\u0621-\u064A\u0660-\u0669 ]+$/i;
@@ -144,7 +178,7 @@ const Support = ({ navigation, route }) => {
           return errors;
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, isSubmitting, values }) => (
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
           <AuthLayout
             title="الدعم الفني"
             subtitle="إذا عندك اسئلة أو اي مشكلة تقنية تةاصل معنا وسنرد باقرب وقت"
@@ -261,24 +295,22 @@ const Support = ({ navigation, route }) => {
                   alignItems: "center",
                   marginTop: SIZES.padding,
                   borderRadius: SIZES.radius,
-                  backgroundColor: isVerythingOk(
-                    values.name,
-                    values.quantity,
-                    values.describtion
-                  )
-                    ? COLORS.primary
-                    : COLORS.transparentPrimray,
+                  borderRadius: SIZES.radius,
+                  backgroundColor:
+                    isVerythingOk(values.email, values.password) &&
+                    !isSubmitting
+                      ? COLORS.primary
+                      : COLORS.transparentPrimray,
                 }}
                 onPress={handleSubmit}
                 disabled={
-                  isVerythingOk(
+                  isSubmitting ||
+                  !isVerythingOk(
                     values.name,
                     values.phoneNumber,
                     values.email,
                     values.describtion
                   )
-                    ? false
-                    : true || isSubmitting
                 }
               />
             </View>

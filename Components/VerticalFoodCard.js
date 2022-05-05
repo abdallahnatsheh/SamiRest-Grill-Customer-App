@@ -73,7 +73,11 @@ const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
           justifyContent: "center",
         }}
       >
-        <Image source={item?.image} style={{ width: "100%", height: "100%" }} />
+        <Image
+          source={{ uri: item?.img }}
+          style={{ width: 150, height: 150, bottom: 13 }}
+          resizeMode="contain"
+        />
       </View>
       {/**INFO SECTION */}
 
@@ -89,9 +93,9 @@ const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
             textAlign: "center",
           }}
         >
-          {item?.info?.length < 25
+          {item?.info?.length < 20
             ? item?.info
-            : item?.info.slice(0, 20) + "..."}
+            : item?.info.slice(0, 15) + "..."}
         </Text>
         {/**price */}
         {item?.deals.enabled ? (

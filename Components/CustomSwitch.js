@@ -7,16 +7,6 @@ const CustomSwitch = ({ value, onChange }) => {
       <View style={{ flexDirection: "row" }}>
         {/**switch  */}
 
-        {/**Text */}
-        <Text
-          style={{
-            color: value ? COLORS.primary : COLORS.gray,
-            marginRight: SIZES.base,
-            ...FONTS.body4,
-          }}
-        >
-          تذكرني
-        </Text>
         <View
           style={value ? styles.switchOnContainer : styles.switchOffContainer}
         >
@@ -27,6 +17,16 @@ const CustomSwitch = ({ value, onChange }) => {
             }}
           />
         </View>
+        {/**Text */}
+        <Text
+          style={{
+            color: value ? COLORS.primary : COLORS.gray,
+            marginLeft: SIZES.base,
+            ...FONTS.body4,
+          }}
+        >
+          تذكرني
+        </Text>
       </View>
     </TouchableWithoutFeedback>
   );

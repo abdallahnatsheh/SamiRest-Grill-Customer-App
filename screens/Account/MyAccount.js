@@ -1,10 +1,13 @@
 import React from "react";
-import { View, ScrollView, Image } from "react-native";
+import { View, ScrollView, Image, Text } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Header, IconBotton, TextButton, InfoItem } from "../../Components";
-import { COLORS, SIZES, icons, dummyData } from "../../constants";
+import { COLORS, SIZES, icons, dummyData, FONTS } from "../../constants";
+import { useAuth } from "../../context/AuthContext";
 
 const MyAccount = ({ navigation }) => {
+  const { currentUser, dataUser } = useAuth();
   function renderHeader() {
     return (
       <Header
@@ -69,13 +72,21 @@ const MyAccount = ({ navigation }) => {
           }}
         >
           <Image
-            source={dummyData?.myProfile?.profile_image}
+            source={
+              dataUser?.personalImage
+                ? { uri: dataUser?.personalImage }
+                : dummyData?.myProfile?.profile_image
+            }
             style={{ width: 100, height: 100, borderRadius: SIZES.radius }}
           />
         </View>
-        <InfoItem label="الاسم الشخصي" value="محمد " />
-        <InfoItem label="اسم العائلة" value="حمادة" />
-        <InfoItem label="رقم الهاتف" value="0531234567" withDivider={false} />
+        <InfoItem label="الاسم الشخصي" value={dataUser.firstName} />
+        <InfoItem label="اسم العائلة" value={dataUser.lastName} />
+        <InfoItem
+          label="رقم الهاتف"
+          value={dataUser.phoneNumber}
+          withDivider={false}
+        />
       </View>
     );
   }
@@ -90,25 +101,28 @@ const MyAccount = ({ navigation }) => {
           backgroundColor: COLORS.lightGray2,
         }}
       >
-        <InfoItem label="تاريخ الميلاد" value="03/03/1990" />
+        <InfoItem label="تاريخ الميلاد" value={dataUser.birthday} />
 
         <InfoItem label="الجنس" value="ذكر" />
 
-        <InfoItem label="تاريخ الانضمام" value="20/4/2022" />
+        <InfoItem
+          label="تاريخ الانضمام"
+          value={Date(currentUser.createdAt).toLocaleString()}
+        />
 
-        <InfoItem label="البريد الإلكتروني" value="abdnatsheh33@gmail.com" />
+        <InfoItem label="البريد الإلكتروني" value={dataUser.email} />
 
-        <InfoItem label=" العنوان الاساسي" value="القدس, بيت حنينا" />
+        <InfoItem label=" العنوان الاساسي" value={dataUser.firstAddress} />
         <InfoItem
           label=" العنوان الفرعي"
-          value=" 6 شارع الاصمعي "
+          value={dataUser.secondAddress}
           withDivider={false}
         />
       </View>
     );
   }
 
-  return (
+  return currentUser ? (
     <View
       style={{
         flex: 1,
@@ -125,6 +139,12 @@ const MyAccount = ({ navigation }) => {
         {renderSectionOne()}
         {renderSectionTwo()}
       </ScrollView>
+    </View>
+  ) : (
+    <View>
+      <TouchableOpacity
+        onPress={navigation.replace("SignIn")}
+      ></TouchableOpacity>
     </View>
   );
 };

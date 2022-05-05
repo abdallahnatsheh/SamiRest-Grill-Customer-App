@@ -22,6 +22,20 @@ const NotificationSettingCard = ({
         backgroundColor: COLORS.lightGray2,
       }}
     >
+      <CustomSwitch
+        value={isSelected}
+        onChange={(value) => setIsSelected(value)}
+      />
+      <View
+        style={{
+          flex: 1,
+          marginRight: SIZES.radius,
+        }}
+      >
+        <Text style={{ ...FONTS.h3 }}>{title}</Text>
+        <Text style={{ color: COLORS.darkGray2, ...FONTS.body5 }}>{desc}</Text>
+      </View>
+
       <Image
         source={icons.notification}
         style={{
@@ -30,33 +44,17 @@ const NotificationSettingCard = ({
           tintColor: COLORS.primary,
         }}
       />
-
-      <View
-        style={{
-          flex: 1,
-          marginLeft: SIZES.radius,
-        }}
-      >
-        <Text style={{ ...FONTS.h3 }}>{title}</Text>
-        <Text style={{ color: COLORS.darkGray2, ...FONTS.body5 }}>{desc}</Text>
-      </View>
-
-      <CustomSwitch
-        value={isSelected}
-        onChange={(value) => setIsSelected(value)}
-      />
     </View>
   );
 };
 
 const NotificationSetting = ({ navigation }) => {
   const [notification, setNotification] = useState(true);
-  const [promoNotification, setPromoNotification] = useState(false);
 
   function renderHeader() {
     return (
       <Header
-        title="NOTIFICATION"
+        title="الإشعارات"
         containerStyle={{
           height: 50,
           marginHorizontal: SIZES.padding,
@@ -97,17 +95,10 @@ const NotificationSetting = ({ navigation }) => {
     return (
       <View>
         <NotificationSettingCard
-          title="Notifications"
-          desc="You will receive daily updates"
+          title="إشعارات الطلبات"
+          desc="اشعارات عند تغيير الطلبات"
           isSelected={notification}
           setIsSelected={setNotification}
-        />
-
-        <NotificationSettingCard
-          title="Promotional Notifications"
-          desc="You will receive daily updates"
-          isSelected={promoNotification}
-          setIsSelected={setPromoNotification}
         />
       </View>
     );

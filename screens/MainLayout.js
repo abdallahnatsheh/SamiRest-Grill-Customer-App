@@ -19,9 +19,11 @@ import {
   icons,
   constants,
   dummyData,
+  images,
 } from "../constants";
 import { Header } from "../Components";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAuth } from "../context/AuthContext";
 
 const TabButton = ({ label, icons, isFocused, onPress }) => {
   return (
@@ -71,6 +73,7 @@ const TabButton = ({ label, icons, isFocused, onPress }) => {
 };
 
 const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
+  const { currentUser, dataUser } = useAuth();
   const flatListRef = React.useRef();
   React.useEffect(() => {
     setSelectedTab(constants.screens.home);
@@ -142,10 +145,18 @@ const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => navigation.navigate("MyAccount")}
+            onPress={() =>
+              currentUser
+                ? navigation.navigate("MyAccount")
+                : navigation.navigate("SignIn")
+            }
           >
             <Image
-              source={dummyData?.myProfile?.profile_image}
+              source={
+                dataUser?.personalImage
+                  ? { uri: dataUser?.personalImage }
+                  : dummyData?.myProfile?.profile_image
+              }
               style={{ width: 40, height: 40, borderRadius: SIZES.radius }}
             />
           </TouchableOpacity>

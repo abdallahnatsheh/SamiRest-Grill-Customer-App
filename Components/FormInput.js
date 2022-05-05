@@ -5,6 +5,7 @@ import { FONTS, SIZES, COLORS } from "../constants";
 const FormInput = ({
   containerStyle,
   label,
+  labelStyle,
   placeholder,
   inputStyle,
   prependComponent,
@@ -17,6 +18,7 @@ const FormInput = ({
   errorMsg = "",
   multiline,
   numberOfLines,
+  value,
 }) => {
   return (
     <View style={{ ...containerStyle }}>
@@ -28,7 +30,9 @@ const FormInput = ({
         }}
       >
         <Text style={{ color: COLORS.red, ...FONTS.body4 }}>{errorMsg}</Text>
-        <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>{label}</Text>
+        <Text style={{ color: COLORS.gray, ...FONTS.body4, ...labelStyle }}>
+          {label}
+        </Text>
       </View>
       {/**TEXT INPUT */}
       <View
@@ -54,6 +58,7 @@ const FormInput = ({
           onChangeText={(text) => onChange(text)}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          value={value}
         />
         {prependComponent}
       </View>

@@ -16,7 +16,8 @@ import IconLabelButton from "./IconLabelButton";
 import InfoItem from "./InfoItem";
 import FormPicker from "./FormPicker";
 import FormDateInput from "./FormDateInput";
-
+import OrderCard from "./OrderCard";
+import OrderStatus from "./OrderStatus";
 export {
   Header,
   HorizontalFoodCard,
@@ -36,4 +37,6 @@ export {
   InfoItem,
   FormPicker,
   FormDateInput,
+  OrderCard,
+  OrderStatus,
 };

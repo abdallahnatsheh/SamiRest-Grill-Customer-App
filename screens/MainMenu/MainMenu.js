@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import {
   FONTS,
@@ -13,13 +14,20 @@ import {
   SIZES,
   dummyData,
   icons,
+  images,
   constants,
 } from "../../constants";
 import { Header, HorizontalFoodCard } from "../../Components";
 import FilterModal from "../Home/FilterModal";
+import shopContext from "../../context/shop-context";
+import { useAuth } from "../../context/AuthContext";
 
 const MainMenu = ({ navigation }) => {
-  const [menuList, setMenuList] = React.useState(dummyData.menu);
+  const context = useContext(shopContext);
+  const { currentUser, dataUser } = useAuth();
+
+  const [menuList, setMenuList] = React.useState(context.products);
+
   const [showFilterModal, setShowFilterModal] = React.useState(false);
   function renderSearch() {
     return (
@@ -52,7 +60,7 @@ const MainMenu = ({ navigation }) => {
           }}
           placeholder="ابحث عن وجبة ..."
           onChangeText={(text) => {
-            let temp = dummyData.menu.filter((a) => a.name.includes(text));
+            let temp = context.products.filter((a) => a.name.includes(text));
             setMenuList(temp);
           }}
         />
@@ -63,6 +71,15 @@ const MainMenu = ({ navigation }) => {
       </View>
     );
   }
+  const [refreshing, setRefreshing] = React.useState(false);
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    console.log("refresj");
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
   return (
     <View
       style={{
@@ -104,10 +121,18 @@ const MainMenu = ({ navigation }) => {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => navigation.navigate("MyAccount")}
+            onPress={() =>
+              currentUser
+                ? navigation.navigate("MyAccount")
+                : navigation.navigate("SignIn")
+            }
           >
             <Image
-              source={dummyData?.myProfile?.profile_image}
+              source={
+                dataUser.personalImage
+                  ? { uri: dataUser?.personalImage }
+                  : images.profile
+              }
               style={{ width: 40, height: 40, borderRadius: SIZES.radius }}
             />
           </TouchableOpacity>
@@ -121,7 +146,7 @@ const MainMenu = ({ navigation }) => {
           isVisible={showFilterModal}
           onClose={() => setShowFilterModal(false)}
           setMenuList={setMenuList}
-          menuList={dummyData.menu}
+          menuList={context.products}
         />
       )}
       {/**MENU LIST  */}
@@ -129,6 +154,9 @@ const MainMenu = ({ navigation }) => {
         data={menuList}
         keyExtractor={(item) => `${item.id}`}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item, index }) => {
           return (
             <HorizontalFoodCard
