@@ -22,7 +22,6 @@ import {
 } from "../../constants";
 import { utils } from "../../utils";
 import { IconBotton } from "../../Components";
-import { Linking } from "react-native";
 
 const Map = ({ navigation, route }) => {
   const mapView = React.useRef();
@@ -190,15 +189,6 @@ const Map = ({ navigation, route }) => {
       </>
     );
   }
-  function dialCall(number) {
-    let phoneNumber = "";
-    if (Platform.OS === "android") {
-      phoneNumber = `tel:${number}`;
-    } else {
-      phoneNumber = `telprompt:${number}`;
-    }
-    Linking.openURL(phoneNumber);
-  }
 
   function renderDeliveryInfo() {
     return (
@@ -301,7 +291,7 @@ const Map = ({ navigation, route }) => {
               backgroundColor: COLORS.primary,
             }}
             onPress={() => {
-              dialCall(123456789);
+              utils.dialCall(parseInt("026200870"));
             }}
           >
             <Image

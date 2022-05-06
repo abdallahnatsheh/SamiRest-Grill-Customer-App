@@ -49,7 +49,7 @@ import Support from "./Support/Support";
 import Settings from "./Settings/Settings";
 import ChangePassword from "./Settings/ChangePassword";
 import NotificationSetting from "./Settings/NotificationSetting";
-
+import AboutUs from "./Settings/AboutUs";
 // Account
 import MyAccount from "./Account/MyAccount";
 import MyAccountEdit from "./Account/MyAccountEdit";
@@ -95,4 +95,5 @@ export {
   Review,
   MySpecialOrder,
   OrderList,
+  AboutUs,
 };

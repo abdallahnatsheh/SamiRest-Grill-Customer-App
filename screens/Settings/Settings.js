@@ -146,6 +146,7 @@ const Settings = () => {
           label="تواصل معنا"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
+          onPress={() => navigation.navigate("AboutUs")}
         />
 
         <LineDivider

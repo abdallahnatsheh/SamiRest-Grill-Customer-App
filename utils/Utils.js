@@ -1,4 +1,4 @@
-import { min } from "react-native-reanimated";
+import { Linking } from "react-native";
 
 function isValidEmail(value) {
   const re =
@@ -56,7 +56,12 @@ function validateName(name, minLength, maxLength, setError) {
   }
 }
 //calculate final price
-const handleFinalPrice = (item,foodTypeAddon, foodTypeValue, neededQuantitiy) => {
+const handleFinalPrice = (
+  item,
+  foodTypeAddon,
+  foodTypeValue,
+  neededQuantitiy
+) => {
   let TypeSum = 0;
   if (foodTypeAddon.length > 0) {
     foodTypeAddon.map((addon) =>
@@ -91,6 +96,15 @@ const handleFinalPrice = (item,foodTypeAddon, foodTypeValue, neededQuantitiy) =>
       : sum;
   return finalprice.toFixed(2);
 };
+function dialCall(number) {
+  let phoneNumber = "";
+  if (Platform.OS === "android") {
+    phoneNumber = `tel:0${number}`;
+  } else {
+    phoneNumber = `telprompt:0${number}`;
+  }
+  Linking.openURL(phoneNumber);
+}
 
 const utils = {
   validateName,
@@ -100,6 +114,7 @@ const utils = {
   validateInput,
   calculateAngle,
   handleFinalPrice,
+  dialCall,
 };
 
 export default utils;

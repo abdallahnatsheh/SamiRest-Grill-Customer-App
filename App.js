@@ -36,6 +36,7 @@ import {
   Review,
   MySpecialOrder,
   OrderList,
+  AboutUs,
 } from "./screens";
 import { navigationRef } from "./navigation/rootNavigation";
 const Stack = createStackNavigator();
@@ -144,6 +145,7 @@ const App = () => {
                 name="NotificationSetting"
                 component={NotificationSetting}
               />
+              <Stack.Screen name="AboutUs" component={AboutUs} />
             </Stack.Navigator>
           </AuthContext>
         </NavigationContainer>

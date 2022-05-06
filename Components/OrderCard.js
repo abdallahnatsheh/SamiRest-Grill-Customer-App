@@ -3,8 +3,9 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
 import { TextButton, OrderStatus } from "../Components";
-import { FONTS, COLORS, SIZES, images } from "../constants";
-
+import { FONTS, COLORS, SIZES, images, icons } from "../constants";
+import TextIconButton from "./TextIconButton";
+import { utils } from "../utils/index";
 const OrderCard = ({ orderItem }) => {
   const navigation = useNavigation();
   function getStatus() {
@@ -148,13 +149,17 @@ const OrderCard = ({ orderItem }) => {
           // On the way --> Track Order + Cancel
           orderItem.status == "قيد التوصيل" && (
             <>
-              <TextButton
-                buttonContainerStyle={{
+              <TextIconButton
+                containerStyle={{
                   ...styles.textButtonContainer,
                   backgroundColor: COLORS.primary,
                 }}
+                icon={icons.map}
+                iconPosition="RIGHT"
+                iconStyle={{ tintColor: COLORS.white }}
                 label="تتبع الطلب"
                 labelStyle={{
+                  color: COLORS.white,
                   ...FONTS.body4,
                 }}
                 onPress={() => navigation.navigate("Map")}
@@ -185,20 +190,40 @@ const OrderCard = ({ orderItem }) => {
           // Delivered / Cancel --> Re-order + Rate
           orderItem.status != "قيد التوصيل" && (
             <>
-              <TextButton
-                buttonContainerStyle={{
+              <TextIconButton
+                containerStyle={{
                   ...styles.textButtonContainer,
                   backgroundColor: COLORS.primary,
                 }}
                 label="معلومات الطلب"
                 labelStyle={{
-                  ...FONTS.h4,
+                  color: COLORS.white,
+                  ...FONTS.body4,
                 }}
                 onPress={() =>
                   navigation.navigate("DeliveryStatus", {
                     orderItem: orderItem,
                   })
                 }
+              />
+
+              <TextIconButton
+                containerStyle={{
+                  ...styles.textButtonContainer,
+                  backgroundColor: COLORS.transparentPrimary9,
+                  marginLeft: SIZES.radius,
+                }}
+                icon={icons.call}
+                iconPosition="RIGHT"
+                iconStyle={{ tintColor: COLORS.primary }}
+                label="اتصل بالمطعم"
+                labelStyle={{
+                  ...FONTS.body4,
+                  color: COLORS.primary,
+                }}
+                onPress={() => {
+                  utils.dialCall(parseInt("026200870"));
+                }}
               />
             </>
           )
