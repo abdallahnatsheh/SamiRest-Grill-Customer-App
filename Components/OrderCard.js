@@ -6,7 +6,7 @@ import { TextButton, OrderStatus } from "../Components";
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import TextIconButton from "./TextIconButton";
 import { utils } from "../utils/index";
-const OrderCard = ({ orderItem }) => {
+const OrderCard = ({ orderItem, dataUser }) => {
   const navigation = useNavigation();
   function getStatus() {
     if (orderItem.status == "تم التوصيل") {
@@ -162,7 +162,9 @@ const OrderCard = ({ orderItem }) => {
                   color: COLORS.white,
                   ...FONTS.body4,
                 }}
-                onPress={() => navigation.navigate("Map")}
+                onPress={() =>
+                  navigation.navigate("Map", { dataUser: dataUser })
+                }
               />
 
               <TextButton

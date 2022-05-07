@@ -155,7 +155,9 @@ const Order = ({ navigation }) => {
           keyExtractor={(item) => `${item.id}`}
           stickySectionHeadersEnabled={false}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <OrderCard orderItem={item} />}
+          renderItem={({ item }) => (
+            <OrderCard orderItem={item} dataUser={dataUser} />
+          )}
           ListFooterComponent={
             <View style={{ height: 50 }}>
               <TouchableOpacity

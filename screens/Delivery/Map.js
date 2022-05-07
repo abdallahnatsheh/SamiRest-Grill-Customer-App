@@ -10,7 +10,7 @@ import {
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { LinearGradient } from "expo-linear-gradient";
-
+import * as Location from "expo-location";
 import {
   COLORS,
   FONTS,
@@ -22,8 +22,10 @@ import {
 } from "../../constants";
 import { utils } from "../../utils";
 import { IconBotton } from "../../Components";
+import { Alert } from "react-native-web";
 
 const Map = ({ navigation, route }) => {
+  const dataUser = route.params.dataUser;
   const mapView = React.useRef();
   const [region, setRegion] = React.useState(null);
   const [toLoc, setToLoc] = React.useState(null);
@@ -31,24 +33,33 @@ const Map = ({ navigation, route }) => {
   const [angle, setAngle] = React.useState(0);
   const [isReady, setIsReady] = React.useState(false);
   const [duration, setDuration] = React.useState("");
-
-  React.useEffect(() => {
+  const [allCor, setAllCor] = React.useState();
+  React.useEffect(async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert("عليك اعطاء صلاحيات الموقع لتفعيل خاصية التتبع");
+      return;
+    }
     let initialRegion = {
       latitude: 31.759206980026935,
       longitude: 35.248937760536805,
       latitudeDelta: 0.02,
       longitudeDelta: 0.02,
     };
-
-    let destination = {
-      latitude: 31.827378191566787,
-      longitude: 35.23535170091141,
-    };
-
-    setToLoc(destination);
-    setFromLoc(dummyData.fromLocs[1]);
-
     setRegion(initialRegion);
+    setFromLoc(dummyData.fromLocs[1]);
+    try {
+      let result = await Location.geocodeAsync(
+        dataUser.firstAddress + "," + dataUser.secondAddress
+      );
+      console.log("geo result", result[0]);
+      setToLoc({
+        latitude: result[0].latitude,
+        longitude: result[0].longitude,
+      });
+    } catch (e) {
+      console.log("geo error", e.message);
+    }
   }, []);
 
   // Render
@@ -60,15 +71,19 @@ const Map = ({ navigation, route }) => {
         style={{
           flex: 1,
         }}
+        loadingEnabled
+        loadingIndicatorColor
+        mapType="mutedStandard"
         provider={PROVIDER_GOOGLE}
         initialRegion={region}
       >
         {fromLoc && (
           <Marker
             key={"fromLoc"}
+            identifier="fromLoc"
             coordinate={fromLoc}
             tracksViewChanges={false}
-            title={"fromLoc"}
+            title={"موقع طلبيتك"}
             pinColor={"#FF8000"}
             rotation={angle}
             anchor={{ x: 0.5, y: 0.5 }}
@@ -80,8 +95,9 @@ const Map = ({ navigation, route }) => {
         {toLoc && (
           <Marker
             key={"toLoc"}
+            identifier="toLoc"
             coordinate={toLoc}
-            title={"toLoc"}
+            title={"موقعك"}
             tracksViewChanges={false}
             pinColor={"#0080FF"}
             anchor={{ x: 0.5, y: 0.5 }}
@@ -103,7 +119,7 @@ const Map = ({ navigation, route }) => {
           optimizeWaypoints={true}
           onReady={(result) => {
             setDuration(Math.ceil(result.duration));
-
+            setAllCor(result.coordinates);
             if (!isReady) {
               // Fit route into maps
               mapView.current.fitToCoordinates(result.coordinates, {
@@ -171,6 +187,17 @@ const Map = ({ navigation, route }) => {
               height: 20,
               tintColor: COLORS.gray,
             }}
+            onPress={() => {
+              mapView.current.fitToCoordinates(allCor),
+                {
+                  edgePadding: {
+                    right: SIZES.width * 0.1,
+                    bottom: 400,
+                    left: SIZES.width * 0.1,
+                    top: SIZES.height * 0.1,
+                  },
+                };
+            }}
           />
 
           <IconBotton
@@ -183,6 +210,17 @@ const Map = ({ navigation, route }) => {
               width: 20,
               height: 20,
               tintColor: COLORS.gray,
+            }}
+            onPress={() => {
+              mapView.current.fitToSuppliedMarkers(["fromLoc"]),
+                {
+                  edgePadding: {
+                    right: SIZES.width * 0.1,
+                    bottom: 400,
+                    left: SIZES.width * 0.1,
+                    top: SIZES.height * 0.1,
+                  },
+                };
             }}
           />
         </View>
@@ -224,7 +262,7 @@ const Map = ({ navigation, route }) => {
           {/* Delivery Time */}
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: "row-reverse",
               alignItems: "center",
             }}
           >
@@ -239,13 +277,13 @@ const Map = ({ navigation, route }) => {
 
             <View
               style={{
-                marginLeft: SIZES.padding,
+                marginRight: SIZES.padding,
               }}
             >
               <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
-                Your delivery time
+                وقت وصول طلبيتك
               </Text>
-              <Text style={{ ...FONTS.h3 }}>{duration} minutes</Text>
+              <Text style={{ ...FONTS.h3 }}>{duration} دقيقة</Text>
             </View>
           </View>
 
@@ -255,6 +293,7 @@ const Map = ({ navigation, route }) => {
               flexDirection: "row",
               alignItems: "center",
               marginTop: SIZES.padding,
+              flexDirection: "row-reverse",
             }}
           >
             <Image
@@ -268,20 +307,20 @@ const Map = ({ navigation, route }) => {
 
             <View
               style={{
-                marginLeft: SIZES.padding,
+                marginRight: SIZES.padding,
               }}
             >
-              <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>
-                Your address
+              <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>عنوانك</Text>
+              <Text style={{ ...FONTS.h3 }}>
+                {dataUser.firstAddress + "," + dataUser.secondAddress}
               </Text>
-              <Text style={{ ...FONTS.h3 }}>88, Jln Padungan, Kuching</Text>
             </View>
           </View>
 
           {/* Delivery Man Details */}
           <TouchableOpacity
             style={{
-              flexDirection: "row",
+              flexDirection: "row-reverse",
               height: 70,
               marginTop: SIZES.padding,
               borderRadius: SIZES.radius,
@@ -303,10 +342,10 @@ const Map = ({ navigation, route }) => {
               }}
             />
 
-            <View style={{ flex: 1, marginLeft: SIZES.radius }}>
-              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>abdallah</Text>
+            <View style={{ flex: 1, marginRight: SIZES.radius }}>
+              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>عبدالله</Text>
               <Text style={{ color: COLORS.white, ...FONTS.body4 }}>
-                Delivery Man
+                موظف التوصيل
               </Text>
             </View>
 
@@ -344,7 +383,6 @@ const Map = ({ navigation, route }) => {
     >
       {/* Map */}
       {renderMaps()}
-
       {/* Header Buttons */}
       {renderHeaderButtons()}
 
