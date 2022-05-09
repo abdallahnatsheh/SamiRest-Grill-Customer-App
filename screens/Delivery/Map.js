@@ -50,7 +50,7 @@ const Map = ({ navigation, route }) => {
     setFromLoc(dummyData.fromLocs[1]);
     try {
       let result = await Location.geocodeAsync(
-        dataUser.firstAddress + "," + dataUser.secondAddress
+        dataUser.firstAddress + "," + dataUser?.secondAddress
       );
       console.log("geo result", result[0]);
       setToLoc({
@@ -312,7 +312,7 @@ const Map = ({ navigation, route }) => {
             >
               <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>عنوانك</Text>
               <Text style={{ ...FONTS.h3 }}>
-                {dataUser.firstAddress + "," + dataUser.secondAddress}
+                {dataUser.firstAddress + "," + dataUser?.secondAddress}
               </Text>
             </View>
           </View>

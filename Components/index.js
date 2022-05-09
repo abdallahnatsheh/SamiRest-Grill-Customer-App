@@ -18,6 +18,8 @@ import FormPicker from "./FormPicker";
 import FormDateInput from "./FormDateInput";
 import OrderCard from "./OrderCard";
 import OrderStatus from "./OrderStatus";
+import FilterModal from "./FilterModal";
+import LocationModal from "./LocationModal";
 export {
   Header,
   HorizontalFoodCard,
@@ -39,4 +41,6 @@ export {
   FormDateInput,
   OrderCard,
   OrderStatus,
+  FilterModal,
+  LocationModal,
 };

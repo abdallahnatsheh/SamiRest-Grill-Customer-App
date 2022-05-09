@@ -14,8 +14,8 @@ import {
   constants,
   icons,
   dummyData,
-} from "../../constants";
-import { IconBotton, TwoPointSlider, TextButton } from "../../Components";
+} from "../constants";
+import { IconBotton, TwoPointSlider, TextButton } from ".";
 
 const Section = ({ containerStyle, title, children }) => {
   return (

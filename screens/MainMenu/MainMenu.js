@@ -18,7 +18,7 @@ import {
   constants,
 } from "../../constants";
 import { Header, HorizontalFoodCard } from "../../Components";
-import FilterModal from "../Home/FilterModal";
+import FilterModal from "../../Components/FilterModal";
 import shopContext from "../../context/shop-context";
 import { useAuth } from "../../context/AuthContext";
 

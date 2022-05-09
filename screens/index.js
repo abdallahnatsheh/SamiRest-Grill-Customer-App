@@ -2,7 +2,6 @@ import MainLayout from "./MainLayout";
 
 // Home
 import Home from "./Home/Home";
-import FilterModal from "./Home/FilterModal";
 // Search
 import Search from "./Search/Search";
 
@@ -59,6 +58,7 @@ import Order from "./Order/Order";
 import OrderList from "./Order/OrderList";
 import Review from "./Order/Review";
 import MySpecialOrder from "./Order/MySpecialOrder";
+import FilterModal from "../Components/FilterModal";
 export {
   MainLayout,
   Support,

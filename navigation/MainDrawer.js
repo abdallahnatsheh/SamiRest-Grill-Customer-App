@@ -197,7 +197,7 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
               icon={icons.logout}
               onPress={async () => {
                 await logout();
-                navigation.replace("SignIn");
+                navigation.replace("Home");
               }}
             />
           </View>

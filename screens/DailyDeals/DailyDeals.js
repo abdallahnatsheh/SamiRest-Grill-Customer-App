@@ -8,8 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { FONTS, COLORS, SIZES, images, icons } from "../../constants";
-import { Header, HorizontalFoodCard } from "../../Components";
-import FilterModal from "../Home/FilterModal";
+import { Header, HorizontalFoodCard, FilterModal } from "../../Components";
 import shopContext from "../../context/shop-context";
 import { useAuth } from "../../context/AuthContext";
 

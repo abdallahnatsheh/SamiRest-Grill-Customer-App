@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, Text, Alert } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  Alert,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {
   Header,
   IconBotton,
@@ -242,6 +251,7 @@ const MyAccountEdit = ({ navigation }) => {
           {renderHeader()}
 
           <KeyboardAwareScrollView
+            horizontal={false}
             keyboardDismissMode="on-drag"
             contentContainerStyle={{
               marginTop: SIZES.radius,
@@ -301,6 +311,7 @@ const MyAccountEdit = ({ navigation }) => {
                 </View>
               </TouchableOpacity>
               {/* first Name and last name */}
+
               <FormInput
                 label="الاسم الشخصي"
                 onChange={handleChange("firstName")}
@@ -442,5 +453,14 @@ const MyAccountEdit = ({ navigation }) => {
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    paddingTop: SIZES.base,
+    backgroundColor: COLORS.lightGray2,
+    width: "100%",
+    height: "100%",
+  },
+});
 export default MyAccountEdit;

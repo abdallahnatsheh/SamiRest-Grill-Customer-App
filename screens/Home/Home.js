@@ -11,7 +11,11 @@ import {
   RefreshControl,
 } from "react-native";
 import { FONTS, COLORS, SIZES, dummyData, icons } from "../../constants";
-import { HorizontalFoodCard, VerticalFoodCard } from "../../Components";
+import {
+  HorizontalFoodCard,
+  VerticalFoodCard,
+  LocationModal,
+} from "../../Components";
 import { useAuth } from "../../context/AuthContext";
 import shopContext from "../../context/shop-context";
 
@@ -29,7 +33,7 @@ const Home = ({ navigation }) => {
   const [dealList, setDealList] = React.useState([]);
   //daily deals menu list
   const [popular, setPopular] = React.useState([]);
-
+  const [showLocationModal, setShowLocationModal] = React.useState(false);
   //to track selection of category
   React.useEffect(() => {
     //retrive popular list
@@ -223,6 +227,7 @@ const Home = ({ navigation }) => {
             marginTop: SIZES.base,
             alignItems: "center",
           }}
+          onPress={() => setShowLocationModal(true)}
         >
           <Image
             source={icons.down_arrow}
@@ -234,11 +239,18 @@ const Home = ({ navigation }) => {
             }}
           />
           <Text style={{ ...FONTS.h3 }}>
-            {dataUser.firstAddress && dataUser.secondAddress
-              ? dataUser.firstAddress + "," + dataUser.secondAddress
+            {dataUser.firstAddress
+              ? dataUser.firstAddress + "," + dataUser?.secondAddress
               : "قم بادخال معلوماتك حتى تتمكن من الطلب"}
           </Text>
         </TouchableOpacity>
+        {/**location modal */}
+        {showLocationModal && dataUser.firstAddress && (
+          <LocationModal
+            isVisible={showLocationModal}
+            onClose={() => setShowLocationModal(false)}
+          />
+        )}
       </View>
     );
   }
