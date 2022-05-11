@@ -1,48 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
-  SectionList,
   Text,
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
   StyleSheet,
-  RefreshControl,
 } from "react-native";
-
 import { Header, IconBotton, TextButton, OrderCard } from "../../Components";
-import {
-  COLORS,
-  SIZES,
-  FONTS,
-  icons,
-  images,
-  dummyData,
-} from "../../constants";
+import { COLORS, SIZES, FONTS, icons, dummyData } from "../../constants";
 import { useAuth } from "../../context/AuthContext";
 import { useProfileOrdersHook } from "../../Hooks/profileOrdersHook";
 
 const Order = ({ navigation }) => {
+  //import the data of the user
   const { currentUser, dataUser } = useAuth();
+
+  //set selected list tab to be delivery list
   const [selectedTab, setSelectedTab] = useState("2");
+
   //get order data from this custom hook
   const ordersList = useProfileOrdersHook();
-  //main orders list
-  const [orders, setOrders] = useState(deliverylistmaker());
 
-  useEffect(() => {
-    setOrders(deliverylistmaker());
-  }, [ordersList]);
-
+  //filter order list to the reserve type of deliveries
   function bookorderlistmaker() {
     const tempList = ordersList.filter((item) => item.orderType == "reserve");
     return tempList;
   }
+
+  //filter order list to the delivery type of deliveries
   function deliverylistmaker() {
     const tempList = ordersList.filter((item) => item.orderType == "deliver");
     return tempList;
   }
+
+  //render screen header and show user picture if existed
   function renderHeader() {
     return (
       <Header
@@ -94,6 +87,7 @@ const Order = ({ navigation }) => {
     );
   }
 
+  //tab buttons to choose the list of delivery types
   function renderTabButtons() {
     return (
       <View
@@ -117,7 +111,6 @@ const Order = ({ navigation }) => {
           }}
           onPress={() => {
             setSelectedTab("1");
-            setOrders(bookorderlistmaker());
           }}
         />
         <TextButton
@@ -134,13 +127,13 @@ const Order = ({ navigation }) => {
           }}
           onPress={() => {
             setSelectedTab("2");
-            setOrders(deliverylistmaker());
           }}
         />
       </View>
     );
   }
 
+  //rednder delivery order list depending on the selected tab to choose the type of the list
   function renderOrders() {
     return (
       <View
@@ -151,7 +144,7 @@ const Order = ({ navigation }) => {
         }}
       >
         <FlatList
-          data={orders}
+          data={selectedTab == 2 ? deliverylistmaker() : bookorderlistmaker()}
           keyExtractor={(item) => `${item.id}`}
           stickySectionHeadersEnabled={false}
           showsVerticalScrollIndicator={false}
@@ -163,7 +156,6 @@ const Order = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => {
                   setSelectedTab("2");
-                  setOrders(deliverylistmaker());
                 }}
               >
                 <Text
@@ -198,9 +190,9 @@ const Order = ({ navigation }) => {
       </View>
     );
   }
-
+  //show the screen if user is logged in , and if orderlist existed
   return currentUser ? (
-    ordersList ? (
+    ordersList.length >= 0 ? (
       <View
         style={{
           flex: 1,
@@ -212,7 +204,9 @@ const Order = ({ navigation }) => {
         {renderOrders()}
       </View>
     ) : (
-      <ActivityIndicator />
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
     )
   ) : (
     <View>
@@ -222,5 +216,15 @@ const Order = ({ navigation }) => {
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+  },
+});
 export default Order;

@@ -135,6 +135,7 @@ const SpecialOrder = () => {
         <AuthLayout
           title="طلبية خاصة"
           subtitle=" اطلب اي وجبة تحتاجها غير موجودة بقائمة الوجبات "
+          subtitleStyle={{ color: COLORS.primary }}
         >
           <View style={{ flex: 1, marginTop: SIZES.padding * 2 }}>
             <FormInput
@@ -212,7 +213,7 @@ const SpecialOrder = () => {
                 </View>
               }
             />
-            {currentUser ? (
+            {currentUser && dataUser.ismappable ? (
               <TextButton
                 label="اطلب الان"
                 buttonContainerStyle={{
@@ -240,7 +241,7 @@ const SpecialOrder = () => {
                   )
                 }
               />
-            ) : (
+            ) : dataUser.ismappable ? (
               <TextButton
                 label="سجل دخولك اولا"
                 buttonContainerStyle={{
@@ -251,6 +252,18 @@ const SpecialOrder = () => {
                   backgroundColor: COLORS.primary,
                 }}
                 onPress={() => navigation.navigate("SignIn")}
+              />
+            ) : (
+              <TextButton
+                label="عدل عنوانك لتستطيع الطلب"
+                buttonContainerStyle={{
+                  height: 55,
+                  alignItems: "center",
+                  marginTop: SIZES.padding,
+                  borderRadius: SIZES.radius,
+                  backgroundColor: COLORS.transparentPrimray,
+                }}
+                disabled
               />
             )}
           </View>

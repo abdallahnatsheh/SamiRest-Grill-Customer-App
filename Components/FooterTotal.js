@@ -3,6 +3,7 @@ import { View, Text, Platform } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants";
 import { TextButton, LineDivider } from "../Components";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAuth } from "../context/AuthContext";
 //this component used to show price and shipping in cart
 const FooterTotal = ({
   subTotal,
@@ -12,6 +13,7 @@ const FooterTotal = ({
   onEmpty,
   containerStyle,
 }) => {
+  const { dataUser } = useAuth();
   return (
     <View style={{ ...containerStyle }}>
       {/**SHADOW */}
@@ -67,7 +69,7 @@ const FooterTotal = ({
           <Text style={{ flex: 1, ...FONTS.h2 }}>المجموع الكلي : </Text>
         </View>
         {/**check out button */}
-        {total === 0.0 ? (
+        {total === 0.0 && dataUser.ismappable ? (
           <TextButton
             buttonContainerStyle={{
               height: 60,
@@ -78,7 +80,7 @@ const FooterTotal = ({
             label="أضف وجبات"
             onPress={onEmpty}
           />
-        ) : (
+        ) : dataUser.ismappable ? (
           <TextButton
             buttonContainerStyle={{
               height: 60,
@@ -88,6 +90,17 @@ const FooterTotal = ({
             }}
             label="إحجز طلبك"
             onPress={onPress}
+          />
+        ) : (
+          <TextButton
+            buttonContainerStyle={{
+              height: 60,
+              marginTop: SIZES.padding,
+              borderRadius: SIZES.radius,
+              backgroundColor: COLORS.transparentPrimray,
+            }}
+            label="عدل عنوانك لتستطيع الطلب"
+            disabled={true}
           />
         )}
       </View>

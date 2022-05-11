@@ -47,22 +47,7 @@ const OrderList = ({ navigation, route }) => {
       />
     );
   }
-  function renderInfo() {
-    return (
-      <View
-        style={{ marginTop: SIZES.radius, paddingHorizontal: SIZES.padding }}
-      >
-        <Text
-          style={{ textAlign: "center", color: COLORS.gray, ...FONTS.body4 }}
-        >
-          وقت طلب الطلبية
-        </Text>
-        <Text style={{ textAlign: "center", ...FONTS.h2 }}>
-          {orderItem.date} / {orderItem.time}
-        </Text>
-      </View>
-    );
-  }
+
   function specialOrderDetails() {
     return (
       <ScrollView>

@@ -10,7 +10,14 @@ import {
   StyleSheet,
   RefreshControl,
 } from "react-native";
-import { FONTS, COLORS, SIZES, dummyData, icons } from "../../constants";
+import {
+  FONTS,
+  COLORS,
+  SIZES,
+  dummyData,
+  icons,
+  constants,
+} from "../../constants";
 import {
   HorizontalFoodCard,
   VerticalFoodCard,
@@ -18,24 +25,47 @@ import {
 } from "../../Components";
 import { useAuth } from "../../context/AuthContext";
 import shopContext from "../../context/shop-context";
+import * as Location from "expo-location";
+import { ToastAndroid } from "react-native";
+import MapViewDirections from "react-native-maps-directions";
 
 const Home = ({ navigation }) => {
   const { currentUser, dataUser } = useAuth();
   const context = useContext(shopContext);
-
-  //to track select category
-  //const [selectCatId, setSelectCatId] = React.useState(1);
-  //track selected menu
-  //const [selectMenuType, setSelectMenuType] = React.useState(1);
-  //to show menu list
-  const [menuList, setMenuList] = React.useState([]);
-  //deals list
-  const [dealList, setDealList] = React.useState([]);
-  //daily deals menu list
-  const [popular, setPopular] = React.useState([]);
+  //location live complete text places
   const [showLocationModal, setShowLocationModal] = React.useState(false);
+  //check location mapping ability
+  const [ifLocMapped, setIfLocMapped] = React.useState("");
+  const [locationEnable, setLocationEnable] = React.useState(true);
+  const [isReady, setIsReady] = React.useState(false);
+
   //to track selection of category
-  React.useEffect(() => {
+  React.useEffect(async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setLocationEnable(false);
+      return;
+    } else {
+      setLocationEnable(true);
+    }
+
+    try {
+      let result = await Location.geocodeAsync(
+        dataUser.firstAddress + "," + dataUser?.secondAddress
+      );
+      setIfLocMapped(result[0]);
+      if (result[0]) {
+        dataUser.ismappable = true;
+        dataUser.locationCoor = result[0];
+      } else {
+        dataUser.ismappable = false;
+      }
+    } catch (e) {
+      console.log("geo error:", e.message);
+    }
+  }, [dataUser]);
+
+  const createPopularList = () => {
     //retrive popular list
     let tempDailyDealsList = context.products.filter(
       (a) => (a.deals.enabled && a.deals.dailyDealEnable) == true
@@ -44,7 +74,10 @@ const Home = ({ navigation }) => {
       [tempDailyDealsList].length >= 3
         ? tempDailyDealsList.sort(() => 0.5 - Math.random())
         : tempDailyDealsList;
-
+    //set popular list based on category id
+    return dailyDealsList.slice(0, 3);
+  };
+  const createDealList = () => {
     //retrive the deals list  menu
     let teampDealsList = context.products.filter(
       (a) => a.deals.enabled && !a.deals.dailyDealEnable == true
@@ -54,23 +87,45 @@ const Home = ({ navigation }) => {
       [teampDealsList].length >= 3
         ? teampDealsList.sort(() => 0.5 - Math.random())
         : teampDealsList;
-
+    //set the recommended menu based on categoryId
+    return dealsList.slice(0, 3);
+  };
+  //handler make main menu list and render only random 3 meals
+  const createMainMenu = () => {
     // select three random meals from list if length bigger or equal to three items
     let selectedMenu =
       context.products.length >= 3
         ? context.products.sort(() => 0.5 - Math.random()).slice(0, 3)
         : context.products;
-
-    //set popular list based on category id
-    setPopular(dailyDealsList.slice(0, 3));
-    //set the recommended menu based on categoryId
-    setDealList(dealsList.slice(0, 3));
     //set menu list
-    setMenuList(selectedMenu);
-  }, []);
-  //handler
-
+    //setMenuList(selectedMenu);
+    return selectedMenu;
+  };
+  function getDuration() {
+    return (
+      <MapViewDirections
+        origin={dummyData.fromLocs[1]}
+        destination={{
+          latitude: ifLocMapped ? ifLocMapped.latitude : 0,
+          longitude: ifLocMapped ? ifLocMapped.longitude : 0,
+        }}
+        apikey={constants.GOOGLE_MAP_API_KEY}
+        mode="DRIVING"
+        optimizeWaypoints={true}
+        onReady={(result) => {
+          dataUser.traverDuration = Math.ceil(result.duration);
+        }}
+      />
+    );
+  }
   const Section = ({ title, onPress, children }) => {
+    if (!locationEnable) {
+      ToastAndroid.showWithGravity(
+        "عليك تفعيل صلاحيات الموقع ",
+        10,
+        ToastAndroid.BOTTOM
+      );
+    }
     return (
       <View>
         {/**HEADER */}
@@ -84,7 +139,7 @@ const Home = ({ navigation }) => {
         >
           <TouchableOpacity onPress={onPress}>
             <Text style={{ color: COLORS.primary, ...FONTS.body3 }}>
-              أظهر الجميع
+              اظهر باقي القائمة
             </Text>
           </TouchableOpacity>
           <Text style={{ flex: 1, ...FONTS.h3 }}>{title}</Text>
@@ -108,7 +163,7 @@ const Home = ({ navigation }) => {
     return (
       <Section title="الخصومات" onPress={() => navigation.navigate("MainMenu")}>
         <FlatList
-          data={dealList}
+          data={createDealList()}
           keyExtractor={(item) => `${item.id}`}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -119,7 +174,7 @@ const Home = ({ navigation }) => {
                   height: 180,
                   width: SIZES.width * 0.85,
                   marginLeft: index == 0 ? SIZES.padding : 18,
-                  marginRight: index == dealList.length - 1 ? SIZES.padding : 0,
+                  marginRight: SIZES.base,
                   paddingRight: SIZES.radius,
                   alignItems: "center",
                 }}
@@ -135,6 +190,18 @@ const Home = ({ navigation }) => {
               />
             );
           }}
+          ListEmptyComponent={
+            <View style={{ marginLeft: 120 }}>
+              <Text
+                style={{
+                  padding: 10,
+                  ...FONTS.h4,
+                }}
+              >
+                لايوجد خصومات , او انتظر ...
+              </Text>
+            </View>
+          }
         />
       </Section>
     );
@@ -147,7 +214,7 @@ const Home = ({ navigation }) => {
       >
         <FlatList
           horizontal
-          data={popular}
+          data={createPopularList()}
           keyExtractor={(item) => `${item.id}`}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
@@ -155,7 +222,7 @@ const Home = ({ navigation }) => {
               <VerticalFoodCard
                 containerStyle={{
                   marginLeft: index == 0 ? SIZES.padding : 18,
-                  marginRight: index == popular.length - 1 ? SIZES.padding : 0,
+                  marginRight: SIZES.base,
                 }}
                 item={item}
                 onPress={() =>
@@ -164,6 +231,18 @@ const Home = ({ navigation }) => {
               />
             </TouchableOpacity>
           )}
+          ListEmptyComponent={
+            <View style={{ marginLeft: 85 }}>
+              <Text
+                style={{
+                  padding: 10,
+                  ...FONTS.h4,
+                }}
+              >
+                لايوجد عروض يومية, او انتظر ...
+              </Text>
+            </View>
+          }
         />
       </Section>
     );
@@ -239,8 +318,10 @@ const Home = ({ navigation }) => {
             }}
           />
           <Text style={{ ...FONTS.h3 }}>
-            {dataUser.firstAddress
+            {dataUser.firstAddress && ifLocMapped
               ? dataUser.firstAddress + "," + dataUser?.secondAddress
+              : dataUser.firstAddress && !ifLocMapped
+              ? "عدل عنوانك لانه لايمكن تحديده على الخريطة"
               : "قم بادخال معلوماتك حتى تتمكن من الطلب"}
           </Text>
         </TouchableOpacity>
@@ -254,6 +335,7 @@ const Home = ({ navigation }) => {
       </View>
     );
   }
+
   const [refreshing, setRefreshing] = React.useState(false);
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -269,9 +351,9 @@ const Home = ({ navigation }) => {
         flex: 1,
       }}
     >
-      {popular && dealList && menuList ? (
+      {context.products ? (
         <FlatList
-          data={menuList}
+          data={createMainMenu()}
           extraData={dataUser}
           keyExtractor={(item) => `${item.id}`}
           showsVerticalScrollIndicator={false}
@@ -282,7 +364,8 @@ const Home = ({ navigation }) => {
             <View>
               {/**DELIVERY ADDRESS SECTION */}
               {renderDeliveryto()}
-
+              {/**just a easy way to get travel duration to customer location */}
+              {getDuration()}
               {/**food category */}
               {/*renderFoodCategories()*/}
 

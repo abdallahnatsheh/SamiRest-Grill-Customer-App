@@ -49,7 +49,6 @@ const AuthContext = ({ children }) => {
       sendEmailVerification(auth.currentUser);
       RootNavigation.navigate("Home");
     } catch (error) {
-      console.error(error.code);
       switch (error.code) {
         case "auth/email-already-in-use":
           Alert.alert("خطأ", "الإيميل مستخدم بالفعل", [{ text: "حسناً" }]);
@@ -112,7 +111,6 @@ const AuthContext = ({ children }) => {
       }
       //navigate("/");
     } catch (error) {
-      console.error(error);
       switch (error.code) {
         case "auth/email-already-in-use":
           // NotificationManager.error("الإيميل مستخدم بالفعل", "خطأ", 5000);

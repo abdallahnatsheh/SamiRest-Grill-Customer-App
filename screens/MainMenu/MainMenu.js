@@ -77,7 +77,6 @@ const MainMenu = ({ navigation }) => {
   };
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    console.log("refresj");
     wait(2000).then(() => setRefreshing(false));
   }, []);
   return (

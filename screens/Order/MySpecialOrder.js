@@ -84,7 +84,7 @@ const MySpecialOrder = ({ navigation }) => {
       />
     );
   }
-
+  const renderItem = ({ item }) => <OrderCard orderItem={item} />;
   function renderOrders() {
     return (
       <View
@@ -99,7 +99,7 @@ const MySpecialOrder = ({ navigation }) => {
           keyExtractor={(item) => `${item.id}`}
           stickySectionHeadersEnabled={false}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <OrderCard orderItem={item} />}
+          renderItem={renderItem}
           ListFooterComponent={
             <View style={{ height: 50 }}>
               <TouchableOpacity

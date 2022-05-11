@@ -19,14 +19,6 @@ import { IconBotton, TextButton } from ".";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useAuth } from "../context/AuthContext";
 
-const Section = ({ containerStyle, title, children }) => {
-  return (
-    <View style={{ marginTop: SIZES.padding, ...containerStyle }}>
-      <Text style={{ ...FONTS.h3 }}>{title}</Text>
-      {children}
-    </View>
-  );
-};
 const LocationModal = ({ isVisible, onClose }) => {
   const modalAnimatedValue = React.useRef(new Animated.Value(0)).current;
   const [ShowFilterModal, setShowFilterModal] = React.useState(isVisible);
@@ -97,8 +89,7 @@ const LocationModal = ({ isVisible, onClose }) => {
           </View>
           <View style={{ flex: 1 }}>
             <GooglePlacesAutocomplete
-              placeholder="اختلر منطقتك:"
-              //fetchDetails={true}
+              placeholder="اختر منطقتك:"
               onPress={(data) => {
                 setChosenLocation(data.description);
               }}
@@ -114,6 +105,15 @@ const LocationModal = ({ isVisible, onClose }) => {
               enableHighAccuracyLocation={true}
               keepResultsAfterBlur={true}
               enablePoweredByContainer={false}
+              styles={{
+                textInput: { backgroundColor: COLORS.lightGray2 },
+                container: {
+                  height: 55,
+                  paddingHorizontal: SIZES.padding,
+                  marginTop: SIZES.base,
+                  borderRadius: SIZES.radius,
+                },
+              }}
             />
           </View>
 

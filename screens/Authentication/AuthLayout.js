@@ -2,7 +2,13 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { images, FONTS, SIZES, COLORS } from "../../constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-const AuthLayout = ({ title, subtitle, titleContainerStyle, children }) => {
+const AuthLayout = ({
+  title,
+  subtitle,
+  subtitleStyle,
+  titleContainerStyle,
+  children,
+}) => {
   return (
     <View
       style={{
@@ -28,6 +34,7 @@ const AuthLayout = ({ title, subtitle, titleContainerStyle, children }) => {
               color: COLORS.darkGray,
               marginTop: SIZES.base,
               ...FONTS.body3,
+              ...subtitleStyle,
             }}
           >
             {subtitle}

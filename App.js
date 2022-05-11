@@ -39,6 +39,7 @@ import {
   AboutUs,
 } from "./screens";
 import { navigationRef } from "./navigation/rootNavigation";
+
 const Stack = createStackNavigator();
 const store = createStore(rootReducer, applyMiddleware(thunk));
 const customFonts = {
@@ -57,6 +58,10 @@ const App = () => {
   /*if (!isLoaded) {
     return null;
   }*/
+  /*useEffect(() => {
+    (async () => {})();
+  }, []);
+  */
   useEffect(() => {
     async function prepare() {
       try {
@@ -91,12 +96,7 @@ const App = () => {
   if (!appIsReady) {
     return null;
   }
-  /** 
-   * un used screens
-          <Stack.Screen name="Otp" component={Otp} />
-           <Stack.Screen name="OnBoarding" component={OnBoarding} />
 
-          */
   return (
     <CartContext>
       <Provider store={store}>

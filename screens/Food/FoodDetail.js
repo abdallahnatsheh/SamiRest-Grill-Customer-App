@@ -26,6 +26,7 @@ import {
 } from "../../Components";
 import shopContext from "../../context/shop-context";
 import { utils } from "../../utils";
+import { useAuth } from "../../context/AuthContext";
 
 const FoodDetail = ({ navigation, route }) => {
   ///STATE TO CHECK THE SELCTED MEAL SIZE
@@ -34,7 +35,7 @@ const FoodDetail = ({ navigation, route }) => {
   const [qty, setQty] = React.useState(1);
   const { item } = route.params;
   const context = useContext(shopContext);
-
+  const { dataUser } = useAuth();
   // Add/Remove checked checkbox item from list
   const handleCheck = (item) => {
     var updatedList = [...selectedAddon];
@@ -211,7 +212,9 @@ const FoodDetail = ({ navigation, route }) => {
               iconStyle={{
                 tintColor: COLORS.black,
               }}
-              label="30 دقيقة"
+              label={
+                dataUser ? dataUser.traverDuration + " دقيقة" : 0 + "دقيقة"
+              }
             />
             {/**RATING */}
             {item.deals.enabled ? (

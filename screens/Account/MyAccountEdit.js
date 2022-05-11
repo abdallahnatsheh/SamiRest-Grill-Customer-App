@@ -88,7 +88,6 @@ const MyAccountEdit = ({ navigation }) => {
             });
         })
         .catch((error) => {
-          console.log(error);
           Alert.alert("خطأ", "مشكلة في خدمة سحابية", [{ text: "حسناً" }]);
         });
     }
@@ -186,7 +185,6 @@ const MyAccountEdit = ({ navigation }) => {
           }
         } catch (e) {
           Alert.alert("خطأ", "خطأ في الخدمة", [{ text: "حسناً" }]);
-          console.log(e);
         }
         setIsSubmitting(false);
         // .then(() => navigation.replace("Home"))

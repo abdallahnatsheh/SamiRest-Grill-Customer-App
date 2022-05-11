@@ -105,6 +105,9 @@ function dialCall(number) {
   }
   Linking.openURL(phoneNumber);
 }
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 const utils = {
   validateName,
@@ -115,6 +118,7 @@ const utils = {
   calculateAngle,
   handleFinalPrice,
   dialCall,
+  wait,
 };
 
 export default utils;

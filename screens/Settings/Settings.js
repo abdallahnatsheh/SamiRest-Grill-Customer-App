@@ -186,7 +186,7 @@ const Settings = () => {
           label="تسجيل الخروج"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
-          onPress={() => navigation.replace("SignIn")}
+          onPress={() => navigation.replace("Home")}
         />
       </View>
     );

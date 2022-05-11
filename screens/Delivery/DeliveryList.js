@@ -17,7 +17,6 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
 const DeliveryList = ({ navigation }) => {
   const context = useContext(shopContext);
-  console.log(context.cart);
   const { currentUser, dataUser } = useAuth();
   ///choose if the order with delivery service or not
   const [deliveryMod, setDeliveryMod] = useState(1);
@@ -28,7 +27,6 @@ const DeliveryList = ({ navigation }) => {
   /// if order is being submitted ot not
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("cart context", context.cart);
   //handle sending order to database
   const handleSubmit = async (event) => {
     setIsSubmitting(true);

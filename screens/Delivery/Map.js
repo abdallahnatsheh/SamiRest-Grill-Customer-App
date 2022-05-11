@@ -41,8 +41,8 @@ const Map = ({ navigation, route }) => {
       return;
     }
     let initialRegion = {
-      latitude: 31.759206980026935,
-      longitude: 35.248937760536805,
+      latitude: 31.768318999999998,
+      longitude: 35.21371,
       latitudeDelta: 0.02,
       longitudeDelta: 0.02,
     };
@@ -52,7 +52,6 @@ const Map = ({ navigation, route }) => {
       let result = await Location.geocodeAsync(
         dataUser.firstAddress + "," + dataUser?.secondAddress
       );
-      console.log("geo result", result[0]);
       setToLoc({
         latitude: result[0].latitude,
         longitude: result[0].longitude,
