@@ -17,7 +17,6 @@ import {
   SignUp,
   ForgotPassword,
   FoodDetail,
-  Checkout,
   MyCart,
   Success,
   AddCard,
@@ -37,6 +36,9 @@ import {
   MySpecialOrder,
   OrderList,
   AboutUs,
+  PrivacyPolicy,
+  TermsConditions,
+  DeliveryDone,
 } from "./screens";
 import { navigationRef } from "./navigation/rootNavigation";
 
@@ -113,11 +115,15 @@ const App = () => {
               <Stack.Screen name="SignUp" component={SignUp} />
               <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
               <Stack.Screen name="FoodDetail" component={FoodDetail} />
-              <Stack.Screen name="Checkout" component={Checkout} />
               <Stack.Screen name="MyCart" component={MyCart} />
               <Stack.Screen
                 name="Success"
                 component={Success}
+                options={{ gestureEnabled: false }}
+              />
+              <Stack.Screen
+                name="DeliveryDone"
+                component={DeliveryDone}
                 options={{ gestureEnabled: false }}
               />
               <Stack.Screen name="DeliveryList" component={DeliveryList} />
@@ -141,6 +147,12 @@ const App = () => {
               <Stack.Screen name="Support" component={Support} />
               <Stack.Screen name="Settings" component={Settings} />
               <Stack.Screen name="ChangePassword" component={ChangePassword} />
+              <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+              <Stack.Screen
+                name="TermsConditions"
+                component={TermsConditions}
+              />
+
               <Stack.Screen
                 name="NotificationSetting"
                 component={NotificationSetting}

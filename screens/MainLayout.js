@@ -84,21 +84,13 @@ const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
         index: 0,
       });
     }
-    /*if (selectedTab == constants.screens.mainMenu) {
-      flatListRef?.current?.scrollToIndex({
-        index: 1,
-      });
-    }*/
+
     if (selectedTab == constants.screens.cart) {
       flatListRef?.current?.scrollToIndex({
         index: 2,
       });
     }
-    /*if (selectedTab == constants.screens.dailyDeals) {
-      flatListRef?.current?.scrollToIndex({
-        index: 3,
-      });
-    }*/
+
     if (selectedTab == constants.screens.specialOrders) {
       flatListRef?.current?.scrollToIndex({
         index: 4,
@@ -186,16 +178,11 @@ const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
                 {item.label == constants.screens.home && (
                   <Home navigation={navigation} />
                 )}
-                {/*{item.label == constants.screens.mainMenu && (
-                  <MainMenu navigation={navigation} />
-                )}*/}
+
                 {item.label == constants.screens.cart && (
                   <CartTab navigation={navigation} />
                 )}
-                {/*
-                {item.label == constants.screens.dailyDeals && (
-                  <DailyDeals navigation={navigation} />
-                )}*/}
+
                 {item.label == constants.screens.specialOrders && (
                   <SpecialOrder />
                 )}
@@ -252,13 +239,6 @@ const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
             isFocused={selectedTab === constants.screens.cart}
             onPress={() => setSelectedTab(constants.screens.cart)}
           />
-          {/*
-          <TabButton
-            label={constants.screens.dailyDeals}
-            icons={icons.coupon}
-            isFocused={selectedTab === constants.screens.dailyDeals}
-            onPress={() => setSelectedTab(constants.screens.dailyDeals)}
-          />*/}
           <TabButton
             label={constants.screens.specialOrders}
             icons={icons.specialOrder}

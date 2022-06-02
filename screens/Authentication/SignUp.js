@@ -1,19 +1,16 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { FONTS, SIZES, COLORS, icons } from "../../constants";
 import AuthLayout from "./AuthLayout";
-import {
-  FormInput,
-  CustomSwitch,
-  TextButton,
-  TextIconButton,
-} from "../../Components";
-import utils from "../../utils/Utils";
+import { FormInput, TextButton } from "../../Components";
 import { Formik } from "formik";
 import { useAuth } from "../../context/AuthContext";
+import Recaptcha from "react-native-recaptcha-that-works";
 
 const SignUp = ({ navigation }) => {
   const { signUp } = useAuth();
+  const recaptcha = useRef();
+
   // password errors
   const [passwordError, setPasswordError] = React.useState("");
   //confirm password error
@@ -25,7 +22,10 @@ const SignUp = ({ navigation }) => {
   const [showPass, setShowPass] = React.useState(false);
   //isSubmitting check
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
+  //capatcha key
+  const [key, setKey] = useState(null);
+  //login button press counter
+  const [loginCount, setLoginCount] = useState(0);
   //function to check if everything validate to enable signin
   function isVerythingOk(email, password, confirmPassword) {
     return (
@@ -41,9 +41,22 @@ const SignUp = ({ navigation }) => {
     <Formik
       initialValues={{ email: "", password: "", confirmPassword: "" }}
       onSubmit={async (values) => {
+        setLoginCount(loginCount + 1);
         setIsSubmitting(true);
-        await signUp(values.email, values.password);
-        setIsSubmitting(false);
+        if (loginCount >= 3) {
+          recaptcha.current.open();
+          if (key) {
+            recaptcha.current.close();
+            await signUp(values.email, values.password);
+            setIsSubmitting(false);
+            setKey("");
+          }
+          setIsSubmitting(false);
+        } else {
+          setIsSubmitting(true);
+          await signUp(values.email, values.password);
+          setIsSubmitting(false);
+        }
       }}
       validate={(values) => {
         const errors = {};
@@ -186,6 +199,37 @@ const SignUp = ({ navigation }) => {
                 isSubmitting || !isVerythingOk(values.email, values.password)
               }
             />
+            <Recaptcha
+              ref={recaptcha}
+              lang="en"
+              footerComponent={
+                <TextButton
+                  label="إغلاق"
+                  buttonContainerStyle={{
+                    height: 55,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setKey("");
+                    recaptcha.current.close();
+                  }}
+                />
+              }
+              siteKey="6LejsqwZAAAAAGsmSDWH5g09dOyNoGMcanBllKPF"
+              baseUrl="http://127.0.0.1"
+              enterprise={true}
+              theme="light"
+              onError={(err) => {
+                console.warn(err);
+              }}
+              onVerify={(token) => {
+                alert("تم تاكيد بنجاح");
+                setKey(token);
+              }}
+              onExpire={() => {
+                setKey("");
+              }}
+            />
 
             {/**SIGN UP */}
             <View
@@ -206,6 +250,37 @@ const SignUp = ({ navigation }) => {
               />
               <Text style={{ color: COLORS.darkGray, ...FONTS.body3 }}>
                 الديك حساب بالفعل ؟
+              </Text>
+            </View>
+            {/**term and privacy policy */}
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: SIZES.radius,
+                justifyContent: "center",
+              }}
+            >
+              <TextButton
+                label={" سياسة الخصوصية"}
+                buttonContainerStyle={{
+                  marginRight: 3,
+                  backgroundColor: null,
+                }}
+                labelStyle={{ color: COLORS.primary, ...FONTS.h5 }}
+                onPress={() => navigation.navigate("PrivacyPolicy")}
+              />
+              <Text style={{ color: COLORS.darkGray, ...FONTS.body5 }}> و</Text>
+              <TextButton
+                label={"البنود و الشروط "}
+                buttonContainerStyle={{
+                  marginRight: 3,
+                  backgroundColor: null,
+                }}
+                labelStyle={{ color: COLORS.primary, ...FONTS.h5 }}
+                onPress={() => navigation.navigate("TermsConditions")}
+              />
+              <Text style={{ color: COLORS.darkGray, ...FONTS.body5 }}>
+                بتسجيلك بالخدمة فانت توافق على
               </Text>
             </View>
           </View>

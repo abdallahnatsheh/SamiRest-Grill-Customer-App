@@ -12,8 +12,9 @@ import { Header, HorizontalFoodCard, FilterModal } from "../../Components";
 import shopContext from "../../context/shop-context";
 import { useAuth } from "../../context/AuthContext";
 
-const DailyDeals = ({ navigation }) => {
+const DailyDeals = ({ navigation, route }) => {
   const context = useContext(shopContext);
+  const today = route.params.today;
   const { currentUser, dataUser } = useAuth();
   const [mainDailyDeals, setMainDailyDeals] = React.useState([]);
   const [menuList, setMenuList] = React.useState([]);
@@ -21,7 +22,11 @@ const DailyDeals = ({ navigation }) => {
 
   React.useEffect(() => {
     const tempmainDailyDeals = context.products.filter(
-      (a) => a.deals.enabled && a.deals.dailyDealEnable == true
+      (a) =>
+        a.deals.enabled &&
+        a.deals.dailyDealEnable == true &&
+        today >= new Date(a.deals.fromDate.seconds * 1000) &&
+        today < new Date(a.deals.toDate.seconds * 1000)
     );
     setMainDailyDeals(tempmainDailyDeals);
     setMenuList(tempmainDailyDeals);
@@ -163,6 +168,20 @@ const DailyDeals = ({ navigation }) => {
           );
         }}
         ListFooterComponent={<View style={{ height: 200 }} />}
+        ListEmptyComponent={
+          <View>
+            <Text
+              style={{
+                textAlign: "center",
+                justifyContent: "center",
+                padding: 10,
+                ...FONTS.h2,
+              }}
+            >
+              لايوجد عروض يومية, او انتظر ...
+            </Text>
+          </View>
+        }
       />
     </View>
   );

@@ -1,5 +1,5 @@
 // Formik x React Native example
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Alert } from "react-native";
 import { Formik } from "formik";
 import { FormInput, TextButton } from "../../Components";
@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const SpecialOrder = () => {
   const { currentUser, dataUser } = useAuth();
@@ -22,6 +23,17 @@ const SpecialOrder = () => {
   const [describtionError, setDescribtionError] = React.useState("");
   //isSubmitting check
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [today, setToday] = useState();
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(JSON.stringify(res.data.datetime).slice(1, -1));
+        });
+    }
+    getCurrentTime();
+  }, []);
   //function to check if everything validate to enable ordering
   function isVerythingOk(name, quantity, describtion) {
     return (
@@ -33,28 +45,18 @@ const SpecialOrder = () => {
       describtionError == ""
     );
   }
-
+  function getTime() {
+    var todays = String(today).slice(11, 20);
+    return todays;
+  }
+  function getDate() {
+    var todays = String(today).slice(0, 10);
+    return todays;
+  }
   return (
     <Formik
       initialValues={{ name: "", quantity: "", describtion: "" }}
       onSubmit={async (values) => {
-        const today = new Date(
-          Date("he-IL", {
-            timeZone: "Asia/Jerusalem",
-          })
-        );
-        var date =
-          today.getFullYear() +
-          "-" +
-          (today.getMonth() + 1) +
-          "-" +
-          today.getDate();
-        var time =
-          today.getHours() +
-          ":" +
-          today.getMinutes() +
-          ":" +
-          today.getSeconds();
         setIsSubmitting(true);
         const orderResult = collection(db, "specialOrders");
         addDoc(orderResult, {
@@ -73,8 +75,8 @@ const SpecialOrder = () => {
             uid: dataUser.uid,
           },
           status: "وضع الانتظار",
-          orderTime: time,
-          orderDate: date,
+          orderTime: getTime(),
+          orderDate: getDate(),
         })
           .then(function () {
             Alert.alert("تم الأرسال", "تم ارسال الطلب بنجاح", [

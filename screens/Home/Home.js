@@ -28,6 +28,7 @@ import shopContext from "../../context/shop-context";
 import * as Location from "expo-location";
 import { ToastAndroid } from "react-native";
 import MapViewDirections from "react-native-maps-directions";
+import axios from "axios";
 
 const Home = ({ navigation }) => {
   const { currentUser, dataUser } = useAuth();
@@ -38,6 +39,17 @@ const Home = ({ navigation }) => {
   const [ifLocMapped, setIfLocMapped] = React.useState("");
   const [locationEnable, setLocationEnable] = React.useState(true);
   const [isReady, setIsReady] = React.useState(false);
+  const [today, setToday] = React.useState("");
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(new Date(JSON.stringify(res.data.datetime).slice(1, -1)));
+        });
+    }
+    getCurrentTime();
+  }, []);
 
   //to track selection of category
   React.useEffect(async () => {
@@ -48,27 +60,32 @@ const Home = ({ navigation }) => {
     } else {
       setLocationEnable(true);
     }
-
-    try {
-      let result = await Location.geocodeAsync(
-        dataUser.firstAddress + "," + dataUser?.secondAddress
-      );
-      setIfLocMapped(result[0]);
-      if (result[0]) {
-        dataUser.ismappable = true;
-        dataUser.locationCoor = result[0];
-      } else {
-        dataUser.ismappable = false;
+    if (currentUser && dataUser) {
+      try {
+        let result = await Location.geocodeAsync(
+          dataUser.firstAddress + "," + dataUser?.secondAddress
+        );
+        setIfLocMapped(result[0]);
+        if (result[0]) {
+          dataUser.ismappable = true;
+          dataUser.locationCoor = result[0];
+        } else {
+          dataUser.ismappable = false;
+        }
+      } catch (e) {
+        console.log("geo error:", e.message);
       }
-    } catch (e) {
-      console.log("geo error:", e.message);
     }
   }, [dataUser]);
 
-  const createPopularList = () => {
+  const createDailyDealList = () => {
     //retrive popular list
     let tempDailyDealsList = context.products.filter(
-      (a) => (a.deals.enabled && a.deals.dailyDealEnable) == true
+      (a) =>
+        (a.deals.enabled &&
+          a.deals.dailyDealEnable &&
+          today >= new Date(a.deals.fromDate.seconds * 1000) &&
+          today < new Date(a.deals.toDate.seconds * 1000)) == true
     );
     let dailyDealsList =
       [tempDailyDealsList].length >= 3
@@ -114,6 +131,7 @@ const Home = ({ navigation }) => {
         optimizeWaypoints={true}
         onReady={(result) => {
           dataUser.traverDuration = Math.ceil(result.duration);
+          dataUser.locationDistance = result.distance;
         }}
       />
     );
@@ -210,11 +228,11 @@ const Home = ({ navigation }) => {
     return (
       <Section
         title="العروض اليومية"
-        onPress={() => navigation.navigate("DailyDeals")}
+        onPress={() => navigation.navigate("DailyDeals", { today: today })}
       >
         <FlatList
           horizontal
-          data={createPopularList()}
+          data={createDailyDealList()}
           keyExtractor={(item) => `${item.id}`}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item, index }) => (
@@ -322,6 +340,8 @@ const Home = ({ navigation }) => {
               ? dataUser.firstAddress + "," + dataUser?.secondAddress
               : dataUser.firstAddress && !ifLocMapped
               ? "عدل عنوانك لانه لايمكن تحديده على الخريطة"
+              : !currentUser
+              ? " سجل دخولك حتى تستطيع الطلب"
               : "قم بادخال معلوماتك حتى تتمكن من الطلب"}
           </Text>
         </TouchableOpacity>

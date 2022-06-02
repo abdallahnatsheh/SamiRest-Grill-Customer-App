@@ -28,7 +28,7 @@ export const COLORS = {
   transparentBlack1: "rgba(0, 0, 0, 0.1)",
   transparentBlack7: "rgba(0, 0, 0, 0.7)",
 };
-export const SIZES = {
+export const  SIZES = {
   // global sizes
   base: 8,
   font: 14,

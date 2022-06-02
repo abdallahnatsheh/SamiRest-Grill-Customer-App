@@ -160,6 +160,7 @@ const Settings = () => {
           label="سياسة الخصوصية"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
+          onPress={() => navigation.navigate("PrivacyPolicy")}
         />
 
         <LineDivider
@@ -173,6 +174,7 @@ const Settings = () => {
           label="البنود و الشروط"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
+          onPress={() => navigation.navigate("TermsConditions")}
         />
 
         <LineDivider
