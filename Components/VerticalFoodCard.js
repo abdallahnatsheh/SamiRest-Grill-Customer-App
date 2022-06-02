@@ -1,8 +1,20 @@
 import React from "react";
 import { View, TouchableOpacity, Text, Image } from "react-native";
 import { COLORS, FONTS, SIZES, icons } from "../constants";
-
+import axios from "axios";
 const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
+  const [today, setToday] = React.useState("");
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(new Date(JSON.stringify(res.data.datetime).slice(1, -1)));
+        });
+    }
+    getCurrentTime();
+  }, []);
+
   return (
     <TouchableOpacity
       style={{
@@ -16,7 +28,10 @@ const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
       onPress={onPress}
     >
       {/**DEALS*/}
-      {item?.deals?.enabled ? (
+      {item.deals.enabled &&
+      item.deals.dailyDealEnable &&
+      today >= new Date(item.deals.fromDate.seconds * 1000) &&
+      today < new Date(item.deals.toDate.seconds * 1000) ? (
         <View
           style={{
             flexDirection: "row",
@@ -47,7 +62,7 @@ const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
             flexDirection: "row",
           }}
         >
-          {/**CALORIES */}
+          {/**empty obj to make style looks good */}
 
           <View style={{ flex: 1, flexDirection: "row" }}>
             <Image
@@ -98,7 +113,10 @@ const VerticalFoodCard = ({ containerStyle, item, onPress }) => {
             : item?.info.slice(0, 15) + "..."}
         </Text>
         {/**price */}
-        {item?.deals.enabled ? (
+        {item.deals.enabled &&
+        item.deals.dailyDealEnable &&
+        today >= new Date(item.deals.fromDate.seconds * 1000) &&
+        today < new Date(item.deals.toDate.seconds * 1000) ? (
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{

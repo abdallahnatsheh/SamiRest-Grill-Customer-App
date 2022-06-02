@@ -60,7 +60,8 @@ const handleFinalPrice = (
   item,
   foodTypeAddon,
   foodTypeValue,
-  neededQuantitiy
+  neededQuantitiy,
+  today
 ) => {
   let TypeSum = 0;
   if (foodTypeAddon.length > 0) {
@@ -74,28 +75,58 @@ const handleFinalPrice = (
   } else {
     TypeSum = 0;
   }
-  /**    let sum =
-      (foodTypeValue.value ? foodTypeValue.value + TypeSum : 0 + TypeSum) *
-      (neededQuantitiy + handleQuantity(item.id)); */
+
   let sum =
     (item.price.types.length > 0
       ? item.price.types[foodTypeValue].value + TypeSum
       : item.price.defaultPrice.value + TypeSum) * neededQuantitiy;
-  /**    let finalprice =
-      (item.deals.enabled && !item.deals.dailyDealEnable) ||
-      (item.deals.enabled &&
-        item.deals.dailyDealEnable &&
-        today >= new Date(item.deals.fromDate.seconds * 1000) &&
-        today < new Date(item.deals.toDate.seconds * 1000))
-        ? sum - (sum * item.deals.value) / 100
-        : sum; */
+
   let finalprice =
     (item.deals.enabled && !item.deals.dailyDealEnable) ||
-    (item.deals.enabled && item.deals.dailyDealEnable)
+    (item.deals.enabled &&
+      item.deals.dailyDealEnable &&
+      today >= new Date(item.deals.fromDate.seconds * 1000) &&
+      today < new Date(item.deals.toDate.seconds * 1000))
       ? sum - (sum * item.deals.value) / 100
       : sum;
   return finalprice.toFixed(2);
 };
+//calculate oneItemPrice
+const oneItemPrice = (
+  item,
+  foodTypeAddon,
+  foodTypeValue,
+  today
+) => {
+  let TypeSum = 0;
+  if (foodTypeAddon.length > 0) {
+    foodTypeAddon.map((addon) =>
+      item.price.addons.find((add, i) => {
+        if (add.name === addon.name) {
+          TypeSum += Number(add.value);
+        }
+      })
+    );
+  } else {
+    TypeSum = 0;
+  }
+
+  let sum =
+    (item.price.types.length > 0
+      ? item.price.types[foodTypeValue].value + TypeSum
+      : item.price.defaultPrice.value + TypeSum) ;
+
+  let finalprice =
+    (item.deals.enabled && !item.deals.dailyDealEnable) ||
+    (item.deals.enabled &&
+      item.deals.dailyDealEnable &&
+      today >= new Date(item.deals.fromDate.seconds * 1000) &&
+      today < new Date(item.deals.toDate.seconds * 1000))
+      ? sum - (sum * item.deals.value) / 100
+      : sum;
+  return finalprice.toFixed(2);
+};
+
 function dialCall(number) {
   let phoneNumber = "";
   if (Platform.OS === "android") {
@@ -119,6 +150,7 @@ const utils = {
   handleFinalPrice,
   dialCall,
   wait,
+  oneItemPrice,
 };
 
 export default utils;

@@ -15,7 +15,6 @@ import {
   COLORS,
   FONTS,
   icons,
-  images,
   SIZES,
   dummyData,
   constants,
@@ -23,9 +22,13 @@ import {
 import { utils } from "../../utils";
 import { IconBotton } from "../../Components";
 import { Alert } from "react-native-web";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../Firebase/firebase.Config";
 
 const Map = ({ navigation, route }) => {
   const dataUser = route.params.dataUser;
+  const orderItem = route.params.orderItem;
+  console.log("dataUser", dataUser);
   const mapView = React.useRef();
   const [region, setRegion] = React.useState(null);
   const [toLoc, setToLoc] = React.useState(null);
@@ -47,7 +50,7 @@ const Map = ({ navigation, route }) => {
       longitudeDelta: 0.02,
     };
     setRegion(initialRegion);
-    setFromLoc(dummyData.fromLocs[1]);
+    setFromLoc(orderItem.workerData.liveCoor);
     try {
       let result = await Location.geocodeAsync(
         dataUser.firstAddress + "," + dataUser?.secondAddress
@@ -60,7 +63,24 @@ const Map = ({ navigation, route }) => {
       console.log("geo error", e.message);
     }
   }, []);
-
+  React.useEffect(
+    () =>
+      onSnapshot(doc(db, "orders", orderItem.id), (snapshot) => {
+        setFromLoc(snapshot.data().workerData.liveCoor);
+        console.log("snapshot", snapshot.data().workerData.liveCoor);
+      }),
+    []
+  );
+  React.useEffect(
+    () =>
+      onSnapshot(doc(db, "orders", orderItem.id), (snapshot) => {
+        if (snapshot.data().status === "تم التوصيل") {
+          console.log("snapshot", snapshot.data().status);
+          navigation.replace("DeliveryDone");
+        }
+      }),
+    []
+  );
   // Render
 
   function renderMaps() {
@@ -84,11 +104,9 @@ const Map = ({ navigation, route }) => {
             tracksViewChanges={false}
             title={"موقع طلبيتك"}
             pinColor={"#FF8000"}
-            rotation={angle}
+            // rotation={angle}
             anchor={{ x: 0.5, y: 0.5 }}
-          >
-            <Image source={icons.navigator} style={{ width: 40, height: 40 }} />
-          </Marker>
+          ></Marker>
         )}
 
         {toLoc && (
@@ -100,12 +118,7 @@ const Map = ({ navigation, route }) => {
             tracksViewChanges={false}
             pinColor={"#0080FF"}
             anchor={{ x: 0.5, y: 0.5 }}
-          >
-            <Image
-              source={icons.location_pin}
-              style={{ width: 40, height: 40 }}
-            />
-          </Marker>
+          ></Marker>
         )}
 
         <MapViewDirections
@@ -329,11 +342,11 @@ const Map = ({ navigation, route }) => {
               backgroundColor: COLORS.primary,
             }}
             onPress={() => {
-              utils.dialCall(parseInt("026200870"));
+              utils.dialCall(parseInt(orderItem.workerData.phoneNumber));
             }}
           >
             <Image
-              source={images.profile}
+              source={{ uri: orderItem.workerData.personalImage }}
               style={{
                 width: 40,
                 height: 40,
@@ -342,7 +355,9 @@ const Map = ({ navigation, route }) => {
             />
 
             <View style={{ flex: 1, marginRight: SIZES.radius }}>
-              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>عبدالله</Text>
+              <Text style={{ color: COLORS.white, ...FONTS.h3 }}>
+                {orderItem.workerData.firstName}
+              </Text>
               <Text style={{ color: COLORS.white, ...FONTS.body4 }}>
                 موظف التوصيل
               </Text>

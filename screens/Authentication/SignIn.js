@@ -1,10 +1,12 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image, BackHandler } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, TouchableOpacity, Image } from "react-native";
 import { FONTS, SIZES, COLORS, icons } from "../../constants";
 import AuthLayout from "./AuthLayout";
-import { FormInput, CustomSwitch, TextButton } from "../../Components";
+import { FormInput, TextButton } from "../../Components";
 import { useAuth } from "../../context/AuthContext";
 import { Formik } from "formik";
+import Recaptcha from "react-native-recaptcha-that-works";
+
 const SignIn = ({ navigation }) => {
   const { login } = useAuth();
   //email vallidations errors
@@ -13,7 +15,10 @@ const SignIn = ({ navigation }) => {
   const [passwordError, setPasswordError] = React.useState("");
   //isSubmitting check
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-
+  //capatcha key
+  const [key, setKey] = useState(null);
+  //login button press counter
+  const [loginCount, setLoginCount] = useState(0);
   //show password or not
   const [showPass, setShowPass] = React.useState(false);
   //save email switch
@@ -23,15 +28,27 @@ const SignIn = ({ navigation }) => {
       email != "" && password != "" && emailError == "" && passwordError == ""
     );
   }
+  const recaptcha = useRef();
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       onSubmit={async (values) => {
+        setLoginCount(loginCount + 1);
         setIsSubmitting(true);
-        await login(values.email, values.password);
-        setIsSubmitting(false);
-        // .then(() => navigation.replace("Home"))
-        //.catch((r) => console.log("damn error", r));
+        if (loginCount >= 3) {
+          recaptcha.current.open();
+          if (key) {
+            recaptcha.current.close();
+            await login(values.email, values.password);
+            setIsSubmitting(false);
+            setKey("");
+          }
+          setIsSubmitting(false);
+        } else {
+          setIsSubmitting(true);
+          await login(values.email, values.password);
+          setIsSubmitting(false);
+        }
       }}
       validate={(values) => {
         const errors = {};
@@ -154,6 +171,33 @@ const SignIn = ({ navigation }) => {
               disabled={
                 isSubmitting || !isVerythingOk(values.email, values.password)
               }
+            />
+            <Recaptcha
+              ref={recaptcha}
+              lang="en"
+              footerComponent={
+                <TextButton
+                  label="إغلاق"
+                  buttonContainerStyle={{
+                    height: 55,
+                    alignItems: "center",
+                  }}
+                  onPress={() => {
+                    setKey("");
+                    recaptcha.current.close();
+                  }}
+                />
+              }
+              siteKey="6LejsqwZAAAAAGsmSDWH5g09dOyNoGMcanBllKPF"
+              baseUrl="http://127.0.0.1"
+              theme="light"
+              onError={(err) => {
+                console.warn(err);
+              }}
+              onVerify={(token) => {
+                alert("تم تاكيد بنجاح");
+                setKey(token);
+              }}
             />
 
             {/**SIGN UP */}

@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, Text, Image, Alert, ActivityIndicator } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import {
@@ -15,6 +15,8 @@ import shopContext from "../../context/shop-context";
 import { utils } from "../../utils";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
+import axios from "axios";
+
 const DeliveryList = ({ navigation }) => {
   const context = useContext(shopContext);
   const { currentUser, dataUser } = useAuth();
@@ -26,7 +28,17 @@ const DeliveryList = ({ navigation }) => {
   const [notesError, setNotesError] = useState("");
   /// if order is being submitted ot not
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [today, setToday] = useState();
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(JSON.stringify(res.data.datetime).slice(1, -1));
+        });
+    }
+    getCurrentTime();
+  }, []);
   //handle sending order to database
   const handleSubmit = async (event) => {
     setIsSubmitting(true);
@@ -96,21 +108,12 @@ const DeliveryList = ({ navigation }) => {
     );
   }
   function getTime() {
-    var today = new Date();
-
-    var time = today.getHours() + ":" + today.getMinutes();
-    return time;
+    var todays = String(today).slice(11, 20);
+    return todays;
   }
   function getDate() {
-    var today = new Date();
-
-    var date =
-      today.getFullYear() +
-      "-" +
-      (today.getMonth() + 1) +
-      "-" +
-      today.getDate();
-    return date;
+    var todays = String(today).slice(0, 10);
+    return todays;
   }
   function renderInfo() {
     return (
@@ -155,7 +158,8 @@ const DeliveryList = ({ navigation }) => {
               item,
               item.addons,
               item.types,
-              item.quantity
+              item.quantity,
+              today
             )}
             ₪
           </Text>

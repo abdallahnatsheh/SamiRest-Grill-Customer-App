@@ -149,13 +149,13 @@ const Order = ({ navigation }) => {
           stickySectionHeadersEnabled={false}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <OrderCard orderItem={item} dataUser={dataUser} />
+            <OrderCard orderItem={item} dataUser={item.dataUser} />
           )}
           ListFooterComponent={
             <View style={{ height: 50 }}>
               <TouchableOpacity
                 onPress={() => {
-                  setSelectedTab("2");
+                  navigation.replace("Order");
                 }}
               >
                 <Text

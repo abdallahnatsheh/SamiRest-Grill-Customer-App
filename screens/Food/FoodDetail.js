@@ -27,6 +27,7 @@ import {
 import shopContext from "../../context/shop-context";
 import { utils } from "../../utils";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const FoodDetail = ({ navigation, route }) => {
   ///STATE TO CHECK THE SELCTED MEAL SIZE
@@ -35,7 +36,8 @@ const FoodDetail = ({ navigation, route }) => {
   const [qty, setQty] = React.useState(1);
   const { item } = route.params;
   const context = useContext(shopContext);
-  const { dataUser } = useAuth();
+  const { currentUser, dataUser } = useAuth();
+  const [today, setToday] = React.useState("");
   // Add/Remove checked checkbox item from list
   const handleCheck = (item) => {
     var updatedList = [...selectedAddon];
@@ -46,43 +48,17 @@ const FoodDetail = ({ navigation, route }) => {
     }
     setSelectedAddon(updatedList);
   };
-
-  //calculate final price
-  const handleFinalPrice = (foodTypeAddon, foodTypeValue, neededQuantitiy) => {
-    let TypeSum = 0;
-    if (foodTypeAddon.length > 0) {
-      foodTypeAddon.map((addon) =>
-        item.price.addons.find((add, i) => {
-          if (add.name === addon.name) {
-            TypeSum += Number(add.value);
-          }
-        })
-      );
-    } else {
-      TypeSum = 0;
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(new Date(JSON.stringify(res.data.datetime).slice(1, -1)));
+        });
     }
-    /**    let sum =
-      (foodTypeValue.value ? foodTypeValue.value + TypeSum : 0 + TypeSum) *
-      (neededQuantitiy + handleQuantity(item.id)); */
-    let sum =
-      (item.price.types.length > 0
-        ? item.price.types[foodTypeValue].value + TypeSum
-        : item.price.defaultPrice.value + TypeSum) * neededQuantitiy;
-    /**    let finalprice =
-      (item.deals.enabled && !item.deals.dailyDealEnable) ||
-      (item.deals.enabled &&
-        item.deals.dailyDealEnable &&
-        today >= new Date(item.deals.fromDate.seconds * 1000) &&
-        today < new Date(item.deals.toDate.seconds * 1000))
-        ? sum - (sum * item.deals.value) / 100
-        : sum; */
-    let finalprice =
-      (item.deals.enabled && !item.deals.dailyDealEnable) ||
-      (item.deals.enabled && item.deals.dailyDealEnable)
-        ? sum - (sum * item.deals.value) / 100
-        : sum;
-    return finalprice.toFixed(2);
-  };
+    getCurrentTime();
+  }, []);
+
   //create final order to be added to the cart
   const makeOrder = () => {
     let order = {
@@ -97,7 +73,14 @@ const FoodDetail = ({ navigation, route }) => {
         item,
         selectedAddon,
         selectedSize,
-        qty
+        qty,
+        today
+      ),
+      oneItemPrice: utils.oneItemPrice(
+        item,
+        selectedAddon,
+        selectedSize,
+        today
       ),
     };
     return order;
@@ -213,15 +196,25 @@ const FoodDetail = ({ navigation, route }) => {
                 tintColor: COLORS.black,
               }}
               label={
-                dataUser ? dataUser.traverDuration + " دقيقة" : 0 + "دقيقة"
+                currentUser && dataUser?.traverDuration
+                  ? dataUser?.traverDuration + " دقيقة"
+                  : 0 + "دقيقة"
               }
             />
             {/**RATING */}
-            {item.deals.enabled ? (
+            {(item.deals.enabled && !item.deals.dailyDealEnable) ||
+            (item.deals.dailyDealEnable &&
+              today >= new Date(item.deals.fromDate.seconds * 1000) &&
+              today < new Date(item.deals.toDate.seconds * 1000)) ? (
               <IconLabel
                 containerStyle={{
                   backgroundColor:
-                    item.deals.enabled && !item.deals.dailyDealEnable
+                    item.deals.enabled &&
+                    !(
+                      item.deals.dailyDealEnable &&
+                      today >= new Date(item.deals.fromDate.seconds * 1000) &&
+                      today < new Date(item.deals.toDate.seconds * 1000)
+                    )
                       ? COLORS.primary
                       : COLORS.yellow,
                 }}
@@ -412,8 +405,13 @@ const FoodDetail = ({ navigation, route }) => {
           }}
           label2="اضف للسلة"
           label={
-            utils.handleFinalPrice(item, selectedAddon, selectedSize, qty) +
-            " ₪"
+            utils.handleFinalPrice(
+              item,
+              selectedAddon,
+              selectedSize,
+              qty,
+              today
+            ) + " ₪"
             /*item.price.types.length > 0
               ? (
                   item.price.types[selectedSize].value +

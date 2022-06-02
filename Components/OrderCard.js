@@ -163,7 +163,10 @@ const OrderCard = ({ orderItem, dataUser }) => {
                   ...FONTS.body4,
                 }}
                 onPress={() =>
-                  navigation.navigate("Map", { dataUser: dataUser })
+                  navigation.navigate("Map", {
+                    dataUser: dataUser,
+                    orderItem: orderItem,
+                  })
                 }
               />
 

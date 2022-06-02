@@ -29,7 +29,6 @@ import DailyDeals from "./DailyDeals/DailyDeals";
 import SpecialOrder from "./SpecialOrder/SpecialOrder";
 
 // Cart
-import Checkout from "./Cart/Checkout";
 import MyCart from "./Cart/MyCart";
 import Success from "./Cart/Success";
 
@@ -41,6 +40,7 @@ import MyCard from "./Card/MyCard";
 import DeliveryStatus from "./Delivery/DeliveryStatus";
 import Map from "./Delivery/Map";
 import DeliveryList from "./Delivery/DeliveryList";
+import DeliveryDone from "./Delivery/DeliveryDone";
 //Support
 import Support from "./Support/Support";
 
@@ -49,6 +49,8 @@ import Settings from "./Settings/Settings";
 import ChangePassword from "./Settings/ChangePassword";
 import NotificationSetting from "./Settings/NotificationSetting";
 import AboutUs from "./Settings/AboutUs";
+import PrivacyPolicy from "./Settings/PrivacyPolicy";
+import TermsConditions from "./Settings/TermsAndConditions";
 // Account
 import MyAccount from "./Account/MyAccount";
 import MyAccountEdit from "./Account/MyAccountEdit";
@@ -78,7 +80,6 @@ export {
   AuthLayout,
   ForgotPassword,
   FoodDetail,
-  Checkout,
   MyCart,
   Success,
   AddCard,
@@ -96,4 +97,7 @@ export {
   MySpecialOrder,
   OrderList,
   AboutUs,
+  PrivacyPolicy,
+  TermsConditions,
+  DeliveryDone,
 };

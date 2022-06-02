@@ -13,7 +13,7 @@ const FooterTotal = ({
   onEmpty,
   containerStyle,
 }) => {
-  const { dataUser } = useAuth();
+  const { currentUser, dataUser } = useAuth();
   return (
     <View style={{ ...containerStyle }}>
       {/**SHADOW */}
@@ -69,7 +69,18 @@ const FooterTotal = ({
           <Text style={{ flex: 1, ...FONTS.h2 }}>المجموع الكلي : </Text>
         </View>
         {/**check out button */}
-        {total === 0.0 && dataUser.ismappable ? (
+        {!currentUser ? (
+          <TextButton
+            buttonContainerStyle={{
+              height: 60,
+              marginTop: SIZES.padding,
+              borderRadius: SIZES.radius,
+              backgroundColor: COLORS.transparentPrimray,
+            }}
+            label="سجل دخولك لتستطيع الطلب"
+            disabled={true}
+          />
+        ) : total === 0.0 && dataUser.ismappable ? (
           <TextButton
             buttonContainerStyle={{
               height: 60,

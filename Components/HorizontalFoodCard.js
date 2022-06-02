@@ -1,8 +1,21 @@
 import React from "react";
 import { View, TouchableOpacity, Text, Image } from "react-native";
 import { COLORS, FONTS, SIZES, icons } from "../constants";
+import axios from "axios";
 
 const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
+  const [today, setToday] = React.useState("");
+  React.useEffect(() => {
+    function getCurrentTime() {
+      axios
+        .get(`http://worldtimeapi.org/api/timezone/Asia/Jerusalem`)
+        .then((res) => {
+          setToday(new Date(JSON.stringify(res.data.datetime).slice(1, -1)));
+        });
+    }
+    getCurrentTime();
+  }, []);
+
   return (
     <TouchableOpacity
       style={{
@@ -31,8 +44,11 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
             : item?.info.slice(0, 15) + "..."}
         </Text>
         {/**price */}
-        {item?.deals.enabled ||
-        (item?.deals.enabled && item?.deals.dailyDealEnable) ? (
+        {(item?.deals.enabled && !item?.deals.dailyDealEnable) ||
+        (item?.deals.enabled &&
+          item?.deals.dailyDealEnable &&
+          today >= new Date(item?.deals.fromDate.seconds * 1000) &&
+          today < new Date(item?.deals.toDate.seconds * 1000)) ? (
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{
@@ -57,7 +73,11 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
         )}
       </View>
       {/** DEALS    */}
-      {item?.deals.enabled ? (
+      {(item?.deals.enabled && !item?.deals.dailyDealEnable) ||
+      (item?.deals.enabled &&
+        item?.deals.dailyDealEnable &&
+        today >= new Date(item?.deals.fromDate.seconds * 1000) &&
+        today < new Date(item?.deals.toDate.seconds * 1000)) ? (
         <View
           style={{
             flexDirection: "row",
@@ -68,9 +88,12 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
         >
           <Text
             style={{
-              color: item?.deals.dailyDealEnable
-                ? COLORS.yellow
-                : COLORS.primary,
+              color:
+                item?.deals.dailyDealEnable &&
+                today >= new Date(item?.deals.fromDate.seconds * 1000) &&
+                today < new Date(item?.deals.toDate.seconds * 1000)
+                  ? COLORS.yellow
+                  : COLORS.primary,
               ...FONTS.body4,
               paddingLeft: 3,
             }}
@@ -82,9 +105,12 @@ const HorizontalFoodCard = ({ containerStyle, imageStyle, item, onPress }) => {
             style={{
               width: 20,
               height: 20,
-              tintColor: item?.deals.dailyDealEnable
-                ? COLORS.yellow
-                : COLORS.primary,
+              tintColor:
+                item?.deals.dailyDealEnable &&
+                today >= new Date(item?.deals.fromDate.seconds * 1000) &&
+                today < new Date(item?.deals.toDate.seconds * 1000)
+                  ? COLORS.yellow
+                  : COLORS.primary,
             }}
             resizeMode="contain"
           />

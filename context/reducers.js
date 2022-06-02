@@ -23,6 +23,7 @@ const addProductToCart = (product, state) => {
     updatedItem.totalPrice = product.totalPrice;
     updatedItem.types = product.types;
     updatedItem.addons = product.addons;
+    updatedItem.oneItemPrice = product.oneItemPrice;
     updatedCart[updatedItemIndex] = updatedItem;
   }
   RootNavigation.navigate("MyCart");
@@ -36,7 +37,6 @@ const emptyCart = (state) => {
 //remove item from cart
 //checks if existed and if there is one it will be removed from cart if theres alot it will
 //decrease the quantity and lower the total price
-
 const removeProductFromCart = (product, state) => {
   const updatedCart = [...state.cart];
   const updatedItemIndex = updatedCart.findIndex(
@@ -51,42 +51,13 @@ const removeProductFromCart = (product, state) => {
   if (updatedItem.quantity <= 0) {
     updatedCart.splice(updatedItemIndex, 1);
   } else {
-    let TypeSum = 0;
-    if (updatedItem.addons.length > 0) {
-      updatedItem.addons.map((addon) =>
-        updatedItem.price.addons.find((add, i) => {
-          if (add.name === addon.name) {
-            TypeSum += Number(add.value);
-          }
-        })
-      );
-    } else {
-      TypeSum = 0;
-    }
-    let sum =
-      updatedItem.price.types.length > 0
-        ? updatedItem.price.types[updatedItem.types].value + TypeSum
-        : updatedItem.price.defaultPrice.value + TypeSum;
-    /**    let finalprice =
-      (item.deals.enabled && !item.deals.dailyDealEnable) ||
-      (item.deals.enabled &&
-        item.deals.dailyDealEnable &&
-        today >= new Date(item.deals.fromDate.seconds * 1000) &&
-        today < new Date(item.deals.toDate.seconds * 1000))
-        ? sum - (sum * item.deals.value) / 100
-        : sum; */
-    let finalprice =
-      (updatedItem.deals.enabled && !updatedItem.deals.dailyDealEnable) ||
-      (updatedItem.deals.enabled && updatedItem.deals.dailyDealEnable)
-        ? sum - (sum * updatedItem.deals.value) / 100
-        : sum;
-
-    updatedItem.totalPrice -= finalprice.toFixed(2);
+    updatedItem.totalPrice -= updatedItem.oneItemPrice;
 
     updatedCart[updatedItemIndex] = updatedItem;
   }
   return { ...state, cart: updatedCart };
 };
+
 const removeProduct = (product, state) => {
   const updatedCart = [...state.cart];
   const updatedItemIndex = updatedCart.findIndex(
@@ -105,38 +76,8 @@ const addProduct = (product, state) => {
     ...updatedCart[updatedItemIndex],
   };
   updatedItem.quantity = updatedItem.quantity + 1;
-  let TypeSum = 0;
-  if (updatedItem.addons.length > 0) {
-    updatedItem.addons.map((addon) =>
-      updatedItem.price.addons.find((add, i) => {
-        if (add.name === addon.name) {
-          TypeSum += Number(add.value);
-        }
-      })
-    );
-  } else {
-    TypeSum = 0;
-  }
 
-  let sum =
-    updatedItem.price.types.length > 0
-      ? updatedItem.price.types[updatedItem.types].value + TypeSum
-      : updatedItem.price.defaultPrice.value + TypeSum;
-  /**    let finalprice =
-      (item.deals.enabled && !item.deals.dailyDealEnable) ||
-      (item.deals.enabled &&
-        item.deals.dailyDealEnable &&
-        today >= new Date(item.deals.fromDate.seconds * 1000) &&
-        today < new Date(item.deals.toDate.seconds * 1000))
-        ? sum - (sum * item.deals.value) / 100
-        : sum; */
-  let finalprice =
-    (updatedItem.deals.enabled && !updatedItem.deals.dailyDealEnable) ||
-    (updatedItem.deals.enabled && updatedItem.deals.dailyDealEnable)
-      ? sum - (sum * updatedItem.deals.value) / 100
-      : sum;
-
-  updatedItem.totalPrice = +updatedItem.totalPrice + +finalprice.toFixed(2);
+  updatedItem.totalPrice = +updatedItem.totalPrice + +updatedItem.oneItemPrice;
 
   updatedCart[updatedItemIndex] = updatedItem;
 
