@@ -24,19 +24,26 @@ import { IconBotton } from "../../Components";
 import { Alert } from "react-native-web";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
-
+//google map for live tracking and duration 
 const Map = ({ navigation, route }) => {
   const dataUser = route.params.dataUser;
   const orderItem = route.params.orderItem;
-  console.log("dataUser", dataUser);
+  //map refrence 
   const mapView = React.useRef();
+  //starting region
   const [region, setRegion] = React.useState(null);
+  //customer coordinates
   const [toLoc, setToLoc] = React.useState(null);
+  //order worker current coordinates
   const [fromLoc, setFromLoc] = React.useState(null);
+  //angle for the marke on the map
   const [angle, setAngle] = React.useState(0);
   const [isReady, setIsReady] = React.useState(false);
+  //current duration to get to destination
   const [duration, setDuration] = React.useState("");
+  //used to show a close view of the map
   const [allCor, setAllCor] = React.useState();
+  //check for location permission to be a able track delivery location
   React.useEffect(async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -63,6 +70,7 @@ const Map = ({ navigation, route }) => {
       console.log("geo error", e.message);
     }
   }, []);
+  //get delivery live location
   React.useEffect(
     () =>
       onSnapshot(doc(db, "orders", orderItem.id), (snapshot) => {
@@ -71,6 +79,7 @@ const Map = ({ navigation, route }) => {
       }),
     []
   );
+  //check if the order is delivered 
   React.useEffect(
     () =>
       onSnapshot(doc(db, "orders", orderItem.id), (snapshot) => {

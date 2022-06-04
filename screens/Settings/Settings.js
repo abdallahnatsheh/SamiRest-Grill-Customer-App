@@ -188,7 +188,10 @@ const Settings = () => {
           label="تسجيل الخروج"
           containerStyle={styles.iconLabelContainerStyle}
           iconStyle={styles.iconLabelIconStyle}
-          onPress={() => navigation.replace("Home")}
+          onPress={async () => {
+            await logout();
+            navigation.replace("Home");
+          }}
         />
       </View>
     );

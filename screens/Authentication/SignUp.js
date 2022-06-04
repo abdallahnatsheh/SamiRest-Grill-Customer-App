@@ -6,7 +6,7 @@ import { FormInput, TextButton } from "../../Components";
 import { Formik } from "formik";
 import { useAuth } from "../../context/AuthContext";
 import Recaptcha from "react-native-recaptcha-that-works";
-
+//sign up menu with capatcha to prenvent bruteforce and misusing the app
 const SignUp = ({ navigation }) => {
   const { signUp } = useAuth();
   const recaptcha = useRef();

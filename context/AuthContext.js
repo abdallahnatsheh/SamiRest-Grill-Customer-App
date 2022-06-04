@@ -95,6 +95,8 @@ const AuthContext = ({ children }) => {
     }
   };
   //login using google mail service , check if existed if not it will create prifile for him
+  //till now the login component still buggy and im waiting for future fix updates and the other
+  //project are not supported anymore
   const loginWithGoogle = async () => {
     try {
       const res = await signInWithPopup(auth, googleProvider);

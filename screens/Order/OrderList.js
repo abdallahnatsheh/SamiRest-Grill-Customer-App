@@ -1,20 +1,12 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View, Text, Image, Alert, ActivityIndicator } from "react-native";
+import { View, Text } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import {
-  Header,
-  TextButton,
-  LineDivider,
-  FormInput,
-  IconBotton,
-} from "../../Components";
+import { Header, TextButton, IconBotton } from "../../Components";
 import { FONTS, COLORS, SIZES, icons, constants } from "../../constants";
-import { utils } from "../../utils";
-
+///render order details 
 const OrderList = ({ navigation, route }) => {
   const { orderItem } = route.params;
-
+  console.log(orderItem);
   function renderHeader() {
     return (
       <Header
@@ -106,7 +98,7 @@ const OrderList = ({ navigation, route }) => {
           }}
         >
           <Text style={{ color: COLORS.darkGray, ...FONTS.body3 }}>
-            {orderItem.totalPrice}₪
+            {item.totalPrice}₪
           </Text>
           <View>
             <Text style={{ ...FONTS.h3 }}>{item.name}</Text>
@@ -129,8 +121,41 @@ const OrderList = ({ navigation, route }) => {
   function renderFooter() {
     return (
       <View style={{ marginTop: SIZES.radius, marginBottom: SIZES.padding }}>
+        {orderItem.shippingFee && (
+          <View
+            style={{
+              marginTop: SIZES.padding,
+              paddingVertical: SIZES.padding,
+              borderRadius: SIZES.radius,
+              borderWidth: 2,
+              borderColor: COLORS.lightGray2,
+              backgroundColor: COLORS.white,
+            }}
+          >
+            {/*TRACK ORDER AND ORDER ID */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingHorizontal: SIZES.padding,
+              }}
+            >
+              <Text style={{ color: COLORS.darkGray, ...FONTS.body3 }}>
+                {orderItem.shippingFee}₪
+              </Text>
+              <View>
+                <Text style={{ ...FONTS.h3 }}> التوصيل</Text>
+              </View>
+            </View>
+          </View>
+        )}
+        <View style={{ padding: 10 }} />
         <TextButton
-          buttonContainerStyle={{ height: 55, borderRadius: SIZES.base }}
+          buttonContainerStyle={{
+            height: 55,
+            borderRadius: SIZES.base,
+          }}
           label="تم"
           onPress={() => navigation.goBack()}
         />

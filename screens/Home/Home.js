@@ -29,6 +29,7 @@ import * as Location from "expo-location";
 import { ToastAndroid } from "react-native";
 import MapViewDirections from "react-native-maps-directions";
 import axios from "axios";
+import { isPointInPolygon } from "geolib";
 
 const Home = ({ navigation }) => {
   const { currentUser, dataUser } = useAuth();
@@ -38,8 +39,8 @@ const Home = ({ navigation }) => {
   //check location mapping ability
   const [ifLocMapped, setIfLocMapped] = React.useState("");
   const [locationEnable, setLocationEnable] = React.useState(true);
-  const [isReady, setIsReady] = React.useState(false);
   const [today, setToday] = React.useState("");
+
   React.useEffect(() => {
     function getCurrentTime() {
       axios
@@ -76,7 +77,7 @@ const Home = ({ navigation }) => {
         console.log("geo error:", e.message);
       }
     }
-  }, [dataUser]);
+  }, [dataUser, dataUser.firstAddress, dataUser.shippingType]);
 
   const createDailyDealList = () => {
     //retrive popular list
@@ -114,11 +115,71 @@ const Home = ({ navigation }) => {
       context.products.length >= 3
         ? context.products.sort(() => 0.5 - Math.random()).slice(0, 3)
         : context.products;
-    //set menu list
-    //setMenuList(selectedMenu);
+    //return menu list
     return selectedMenu;
   };
   function getDuration() {
+    //this function used to check if the customer address support delivery service
+    //by checking if he is inside the supported area using google map polygon coordinates
+    //and then get the delivery duration for the best and closest road
+    let ifInside =
+      ifLocMapped &&
+      isPointInPolygon(
+        {
+          latitude: ifLocMapped?.latitude,
+          longitude: ifLocMapped?.longitude,
+        },
+        [
+          { latitude: 31.7524789, longitude: 35.2478983 },
+          { latitude: 31.7555076, longitude: 35.2499796 },
+          { latitude: 31.7588281, longitude: 35.2518893 },
+          { latitude: 31.7620027, longitude: 35.2529408 },
+          { latitude: 31.7653232, longitude: 35.2522756 },
+          { latitude: 31.7669653, longitude: 35.2472975 },
+          { latitude: 31.7662719, longitude: 35.2424052 },
+          { latitude: 31.7596308, longitude: 35.2361821 },
+          { latitude: 31.7545222, longitude: 35.235045 },
+          { latitude: 31.7517124, longitude: 35.2350773 },
+          { latitude: 31.7489026, longitude: 35.2359679 },
+          { latitude: 31.7493407, longitude: 35.2423621 },
+          { latitude: 31.7505449, longitude: 35.2454306 },
+          { latitude: 31.7524789, longitude: 35.2478983 },
+        ]
+      );
+    let ifOutide =
+      ifLocMapped &&
+      isPointInPolygon(
+        {
+          latitude: ifLocMapped?.latitude,
+          longitude: ifLocMapped?.longitude,
+        },
+        [
+          { latitude: 31.7606916, longitude: 35.2560904 },
+          { latitude: 31.7682441, longitude: 35.255061 },
+          { latitude: 31.774337, longitude: 35.2512847 },
+          { latitude: 31.7796272, longitude: 35.248023 },
+          { latitude: 31.7827283, longitude: 35.2413275 },
+          { latitude: 31.7798827, longitude: 35.2364346 },
+          { latitude: 31.7755777, longitude: 35.233087 },
+          { latitude: 31.7712725, longitude: 35.2278515 },
+          { latitude: 31.7647782, longitude: 35.2257063 },
+          { latitude: 31.7465661, longitude: 35.2235946 },
+          { latitude: 31.7413195, longitude: 35.2233238 },
+          { latitude: 31.7344669, longitude: 35.2257995 },
+          { latitude: 31.7303972, longitude: 35.240363 },
+          { latitude: 31.7352702, longitude: 35.2525335 },
+          { latitude: 31.7443768, longitude: 35.2555211 },
+          { latitude: 31.7606916, longitude: 35.2560904 },
+        ]
+      );
+
+    if (ifInside && ifOutide) {
+      dataUser.shippingType = "inside";
+    } else if (!ifInside && ifOutide) {
+      dataUser.shippingType = "outside";
+    } else if (!ifInside && !ifOutide) {
+      dataUser.shippingType = "away";
+    }
     return (
       <MapViewDirections
         origin={dummyData.fromLocs[1]}
@@ -136,6 +197,7 @@ const Home = ({ navigation }) => {
       />
     );
   }
+  // render flat list section and check if location permission is granted
   const Section = ({ title, onPress, children }) => {
     if (!locationEnable) {
       ToastAndroid.showWithGravity(
@@ -176,7 +238,7 @@ const Home = ({ navigation }) => {
       ></Section>
     );
   }
-
+//render 3 random orders that have deals
   function renderDeals() {
     return (
       <Section title="الخصومات" onPress={() => navigation.navigate("MainMenu")}>
@@ -224,6 +286,7 @@ const Home = ({ navigation }) => {
       </Section>
     );
   }
+  //render 3 random daily deals orders
   function renderDailyDeals() {
     return (
       <Section
@@ -265,7 +328,9 @@ const Home = ({ navigation }) => {
       </Section>
     );
   }
-  /* function renderFoodCategories() {
+  /*
+  //category menu for future use
+  function renderFoodCategories() {
     return (
       <FlatList
         horizontal
@@ -310,6 +375,7 @@ const Home = ({ navigation }) => {
       />
     );
   }*/
+  //show customer address with the ability to change it using google places api
   function renderDeliveryto() {
     return (
       <View
@@ -355,7 +421,7 @@ const Home = ({ navigation }) => {
       </View>
     );
   }
-
+//refresh the page to be updated
   const [refreshing, setRefreshing] = React.useState(false);
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));

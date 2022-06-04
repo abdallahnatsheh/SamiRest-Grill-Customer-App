@@ -9,10 +9,9 @@ import {
   ADD_IT,
   EMPTY_CART,
 } from "./reducers";
-//import { useGetMainMenuMeals } from "../Components/firebase/mainMenuHooks/mainMenuHook";
 import useLocalStorage from "../Hooks/useLocalStorage";
 import { useGetMainMenuMeals } from "../Hooks/mainMenuHook";
-//fix cart list to be  saved in cookies for future use , without it will be alot of bugs
+//fix cart list to be  saved , without it will be alot of bugs
 function fixList(list) {
   let temp = [];
   list.map((item) => temp.push({ ...item.data(), quantity: 0, id: item.id }));

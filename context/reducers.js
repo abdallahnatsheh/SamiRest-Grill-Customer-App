@@ -57,7 +57,7 @@ const removeProductFromCart = (product, state) => {
   }
   return { ...state, cart: updatedCart };
 };
-
+//remove the item completely from cart
 const removeProduct = (product, state) => {
   const updatedCart = [...state.cart];
   const updatedItemIndex = updatedCart.findIndex(
@@ -66,6 +66,7 @@ const removeProduct = (product, state) => {
   updatedCart.splice(updatedItemIndex, 1);
   return { ...state, cart: updatedCart };
 };
+//add meal to cart with checking if it existed or not
 const addProduct = (product, state) => {
   const updatedCart = [...state.cart];
   const updatedItemIndex = updatedCart.findIndex(

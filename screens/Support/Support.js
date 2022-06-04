@@ -15,7 +15,7 @@ import { FONTS, SIZES, COLORS, icons, dummyData } from "../../constants";
 import { useAuth } from "../../context/AuthContext";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
-
+//support page to send to the manager questions or technical issues
 const Support = ({ navigation, route }) => {
   const { dataUser } = useAuth();
 

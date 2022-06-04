@@ -4,21 +4,13 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-import {
-  COLORS,
-  FONTS,
-  SIZES,
-  constants,
-  icons,
-  images,
-  dummyData,
-} from "../constants";
+import { COLORS, FONTS, SIZES, constants, icons, images } from "../constants";
 import { MainLayout } from "../screens";
 import { connect } from "react-redux";
 import { setSelectedTab } from "../stores/tab/tabAction";
 import { useAuth } from "../context/AuthContext";
 const Drawer = createDrawerNavigator();
-
+///this component cotain the main drawer menu 
 const CustomDrawerItem = ({ label, icon, isFocused, onPress }) => {
   return (
     <TouchableOpacity
@@ -125,14 +117,7 @@ const CustomDrawerContent = ({ navigation, selectedTab, setSelectedTab }) => {
               navigation.navigate("MainMenu");
             }}
           />
-          <CustomDrawerItem
-            label={constants.screens.dailyDeals}
-            icon={icons.coupon}
-            onPress={() => {
-              navigation.closeDrawer();
-              navigation.navigate("DailyDeals");
-            }}
-          />
+
           <CustomDrawerItem
             label={constants.screens.specialOrders}
             icon={icons.specialOrder}

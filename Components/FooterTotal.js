@@ -46,16 +46,37 @@ const FooterTotal = ({
           <Text style={{ flex: 1, ...FONTS.body3 }}>المجموع</Text>
         </View>
         {/**SHIPPING FEE */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: SIZES.base,
-            marginBottom: SIZES.padding,
-          }}
-        >
-          <Text style={{ ...FONTS.h3 }}>₪ {shippingFee.toFixed(2)}</Text>
-          <Text style={{ flex: 1, ...FONTS.body3 }}>التوصيل</Text>
-        </View>
+
+        {shippingFee != "away" ? (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: SIZES.base,
+              marginBottom: SIZES.padding,
+            }}
+          >
+            <Text style={{ ...FONTS.h3 }}>
+              ₪{" "}
+              {shippingFee == "inside"
+                ? 15.0
+                : shippingFee == "outside"
+                ? 20.0
+                : null}
+            </Text>
+            <Text style={{ flex: 1, ...FONTS.body3 }}>التوصيل</Text>
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: SIZES.base,
+              marginBottom: SIZES.padding,
+            }}
+          >
+            <Text style={{ ...FONTS.h3 }}>مكانك لا يدعم خدمة التوصيل</Text>
+            <Text style={{ flex: 1, ...FONTS.body3 }}>التوصيل</Text>
+          </View>
+        )}
         {/**LINE DIVIDER */}
         <LineDivider />
         {/**TOTAL */}

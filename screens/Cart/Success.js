@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, BackHandler } from "react-native";
 import { TextButton } from "../../Components";
 import { FONTS, COLORS, SIZES, images } from "../../constants";
-
+//show that the order ordered successfully
 const Success = ({ navigation }) => {
   React.useEffect(() => {
     const backHandler = BackHandler.addEventListener(

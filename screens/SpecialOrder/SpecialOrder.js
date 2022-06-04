@@ -10,7 +10,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-
+//special order page to send orders not written on the menu
 const SpecialOrder = () => {
   const { currentUser, dataUser } = useAuth();
   const navigation = useNavigation();
@@ -23,7 +23,9 @@ const SpecialOrder = () => {
   const [describtionError, setDescribtionError] = React.useState("");
   //isSubmitting check
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  //get todays date 
   const [today, setToday] = useState();
+  //send get request to get todays date and time
   React.useEffect(() => {
     function getCurrentTime() {
       axios
@@ -45,10 +47,12 @@ const SpecialOrder = () => {
       describtionError == ""
     );
   }
+  //parse time 
   function getTime() {
     var todays = String(today).slice(11, 20);
     return todays;
   }
+  //parse date
   function getDate() {
     var todays = String(today).slice(0, 10);
     return todays;
@@ -56,6 +60,7 @@ const SpecialOrder = () => {
   return (
     <Formik
       initialValues={{ name: "", quantity: "", describtion: "" }}
+      //submit data to datebase
       onSubmit={async (values) => {
         setIsSubmitting(true);
         const orderResult = collection(db, "specialOrders");
@@ -95,21 +100,16 @@ const SpecialOrder = () => {
         const nameArabicRegex = /^[\u0621-\u064A\u0660-\u0669 ]+$/i;
         if (!values.name) {
           setNameError("الاسم مطلوب");
-          //errors.name = "الاسم مطلوب";
         } else if (!nameArabicRegex.test(values.name)) {
           setNameError("الاسم غير صالح");
-          //errors.name = "الاسم غير صالح";
         } else if (values.name.length <= 0 || values.name.length > 20) {
           setNameError("الاسم غير صالح");
-          //errors.name = "الاسم غير صالح";
         } else {
           setNameError("");
         }
         if (!values.quantity) {
-          // errors.quantity = "الكمية مطلوبة";
           setNumberError("الكمية مطلوبة");
         } else if (values.quantity < 0 || values.quantity > 1000) {
-          //errors.quantity = "ادخل كمية صالحة ";
           setNumberError("ادخل كمية صالحة ");
         } else {
           setNumberError("");

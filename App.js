@@ -19,7 +19,6 @@ import {
   FoodDetail,
   MyCart,
   Success,
-  AddCard,
   DeliveryStatus,
   DeliveryList,
   Map,
@@ -32,7 +31,6 @@ import {
   MyAccount,
   MyAccountEdit,
   Order,
-  Review,
   MySpecialOrder,
   OrderList,
   AboutUs,
@@ -127,7 +125,6 @@ const App = () => {
                 options={{ gestureEnabled: false }}
               />
               <Stack.Screen name="DeliveryList" component={DeliveryList} />
-              <Stack.Screen name="AddCard" component={AddCard} />
               <Stack.Screen
                 name="DeliveryStatus"
                 component={DeliveryStatus}
@@ -138,8 +135,6 @@ const App = () => {
               <Stack.Screen name="Order" component={Order} />
               <Stack.Screen name="MySpecialOrder" component={MySpecialOrder} />
               <Stack.Screen name="OrderList" component={OrderList} />
-
-              <Stack.Screen name="Review" component={Review} />
 
               <Stack.Screen name="Map" component={Map} />
               <Stack.Screen name="DailyDeals" component={DailyDeals} />

@@ -14,10 +14,11 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import { connect } from "react-redux";
 import { setSelectedTab } from "../../stores/tab/tabAction";
 import shopContext from "../../context/shop-context";
-
+import { useAuth } from "../../context/AuthContext";
+//same cart but shown from tab menu
 const CartTab = ({ navigation, setSelectedTab }) => {
   const context = useContext(shopContext);
-
+  const { dataUser } = useAuth();
   function renderCartList() {
     return context.cart.length > 0 ? (
       <SwipeListView
@@ -138,7 +139,7 @@ const CartTab = ({ navigation, setSelectedTab }) => {
       {/**FOOTER */}
       <FooterTotal
         subTotal={calcFinalPrice()}
-        shippingFee={0.0}
+        shippingFee={dataUser.shippingType}
         total={calcFinalPrice()}
         containerStyle={{ paddingBottom: 150 }}
         onPress={() => navigation.navigate("DeliveryList")}

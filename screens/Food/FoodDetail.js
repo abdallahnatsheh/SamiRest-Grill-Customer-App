@@ -28,14 +28,20 @@ import shopContext from "../../context/shop-context";
 import { utils } from "../../utils";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
-
+//used to show infromation about a meal in menu and if it have deals and the shipping fee and duration
+//with a button to show cart menu
 const FoodDetail = ({ navigation, route }) => {
   ///STATE TO CHECK THE SELCTED MEAL SIZE
   const [selectedSize, setSelectedSize] = React.useState(0);
+  //check selected addons for the meal
   const [selectedAddon, setSelectedAddon] = React.useState([]);
+  //quantity of the meal
   const [qty, setQty] = React.useState(1);
+  //meal information
   const { item } = route.params;
+  //used to get cart menu from context
   const context = useContext(shopContext);
+  //contains current logged in user information
   const { currentUser, dataUser } = useAuth();
   const [today, setToday] = React.useState("");
   // Add/Remove checked checkbox item from list
@@ -48,6 +54,7 @@ const FoodDetail = ({ navigation, route }) => {
     }
     setSelectedAddon(updatedList);
   };
+  //get current date time
   React.useEffect(() => {
     function getCurrentTime() {
       axios
@@ -179,11 +186,15 @@ const FoodDetail = ({ navigation, route }) => {
                 marginLeft: SIZES.radius,
                 paddingHorizontal: 0,
               }}
-              icon={icons.dollar}
-              iconStyle={{
-                tintColor: COLORS.black,
-              }}
-              label="توصيل مجاني"
+              label={
+                dataUser.shippingType == "inside"
+                  ? " توصيل: 15 ₪  "
+                  : dataUser.shippingType == "outside"
+                  ? " توصيل: 20 ₪  "
+                  : dataUser.shippingType == "away"
+                  ? "لا يدعم توصيل"
+                  : "هناك خطأ بالشبكة"
+              }
             />
             {/**DURATION */}
             <IconLabel
@@ -197,8 +208,8 @@ const FoodDetail = ({ navigation, route }) => {
               }}
               label={
                 currentUser && dataUser?.traverDuration
-                  ? dataUser?.traverDuration + " دقيقة"
-                  : 0 + "دقيقة"
+                  ? dataUser?.traverDuration + " دقيقة "
+                  : 0 + " دقيقة "
               }
             />
             {/**RATING */}
@@ -412,12 +423,6 @@ const FoodDetail = ({ navigation, route }) => {
               qty,
               today
             ) + " ₪"
-            /*item.price.types.length > 0
-              ? (
-                  item.price.types[selectedSize].value +
-                  item.price.defaultPrice.value * qty
-                ).toFixed(2)
-              : (item.price.defaultPrice.value * qty).toFixed(2) + " ₪"*/
           }
           onPress={context.addProductToCart.bind(this, makeOrder())}
         />
