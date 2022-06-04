@@ -1,11 +1,13 @@
 import { Linking } from "react-native";
+//these helper functions
 
+//this function for email vlidation
 function isValidEmail(value) {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(value).toLowerCase());
 }
-
+//check email if validated
 function validateEmail(value, setEmailError) {
   if (value == "") {
     setEmailError("");
@@ -15,7 +17,7 @@ function validateEmail(value, setEmailError) {
     setEmailError("البريد الالكتروني غير صالح");
   }
 }
-
+//validate passowrd
 function validatePassword(value, setPasswordError) {
   if (value.length < 9) {
     setPasswordError("Password must be 9 characters");
@@ -31,7 +33,7 @@ function validateInput(value, minLength, setError) {
     setError("");
   }
 }
-
+//calculate angle for the marker on the map
 function calculateAngle(coordinates) {
   let startLat = coordinates[0]["latitude"];
   let startLng = coordinates[0]["longitude"];
@@ -92,12 +94,7 @@ const handleFinalPrice = (
   return finalprice.toFixed(2);
 };
 //calculate oneItemPrice
-const oneItemPrice = (
-  item,
-  foodTypeAddon,
-  foodTypeValue,
-  today
-) => {
+const oneItemPrice = (item, foodTypeAddon, foodTypeValue, today) => {
   let TypeSum = 0;
   if (foodTypeAddon.length > 0) {
     foodTypeAddon.map((addon) =>
@@ -112,9 +109,9 @@ const oneItemPrice = (
   }
 
   let sum =
-    (item.price.types.length > 0
+    item.price.types.length > 0
       ? item.price.types[foodTypeValue].value + TypeSum
-      : item.price.defaultPrice.value + TypeSum) ;
+      : item.price.defaultPrice.value + TypeSum;
 
   let finalprice =
     (item.deals.enabled && !item.deals.dailyDealEnable) ||
@@ -126,7 +123,7 @@ const oneItemPrice = (
       : sum;
   return finalprice.toFixed(2);
 };
-
+//call a specific number
 function dialCall(number) {
   let phoneNumber = "";
   if (Platform.OS === "android") {

@@ -32,6 +32,7 @@ export const useProfileOrdersHook = () => {
               orderType: doc.data().orderType,
               workerData: doc.data().workerData,
               dataUser: doc.data().dataUser,
+              shippingFee: doc.data().shippingFee,
             };
             const updatedItemIndex = updatedOrder.findIndex(
               (item) => item.id === temp.id

@@ -7,7 +7,7 @@ import {
   TextIconButton,
 } from "../../Components";
 import { FONTS, COLORS, SIZES, icons, constants } from "../../constants";
-
+//render delivery current status
 const DeliveryStatus = ({ navigation, route }) => {
   const { orderItem } = route.params;
 

@@ -19,7 +19,7 @@ const DailyDeals = ({ navigation, route }) => {
   const [mainDailyDeals, setMainDailyDeals] = React.useState([]);
   const [menuList, setMenuList] = React.useState([]);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
-
+  //render daily deal menu and check if the deal still active
   React.useEffect(() => {
     const tempmainDailyDeals = context.products.filter(
       (a) =>

@@ -2,23 +2,13 @@ import MainLayout from "./MainLayout";
 
 // Home
 import Home from "./Home/Home";
-// Search
-import Search from "./Search/Search";
 
 // Cart
 import CartTab from "./Cart/CartTab";
 
-// Favourite
-import Favourite from "./Favourite/Favourite";
-
-// Notification
-import Notification from "./Notification/Notification";
-import OnBoarding from "./OnBoarding/OnBoarding";
-
 // Authentication
 import SignIn from "./Authentication/SignIn";
 import SignUp from "./Authentication/SignUp";
-import Otp from "./Authentication/Otp";
 import ForgotPassword from "./Authentication/ForgotPassword";
 import AuthLayout from "./Authentication/AuthLayout";
 
@@ -31,10 +21,6 @@ import SpecialOrder from "./SpecialOrder/SpecialOrder";
 // Cart
 import MyCart from "./Cart/MyCart";
 import Success from "./Cart/Success";
-
-// Card
-import AddCard from "./Card/AddCard";
-import MyCard from "./Card/MyCard";
 
 // Delivery
 import DeliveryStatus from "./Delivery/DeliveryStatus";
@@ -58,7 +44,6 @@ import MyAccountEdit from "./Account/MyAccountEdit";
 //order lists
 import Order from "./Order/Order";
 import OrderList from "./Order/OrderList";
-import Review from "./Order/Review";
 import MySpecialOrder from "./Order/MySpecialOrder";
 import FilterModal from "../Components/FilterModal";
 export {
@@ -69,21 +54,14 @@ export {
   DailyDeals,
   Home,
   FilterModal,
-  Search,
   CartTab,
-  Favourite,
-  Notification,
-  OnBoarding,
   SignIn,
   SignUp,
-  Otp,
   AuthLayout,
   ForgotPassword,
   FoodDetail,
   MyCart,
   Success,
-  AddCard,
-  MyCard,
   DeliveryStatus,
   Map,
   Settings,
@@ -93,7 +71,6 @@ export {
   MyAccountEdit,
   DeliveryList,
   Order,
-  Review,
   MySpecialOrder,
   OrderList,
   AboutUs,

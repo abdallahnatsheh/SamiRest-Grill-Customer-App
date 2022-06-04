@@ -1,5 +1,5 @@
 import * as React from "react";
-
+//global navigator to be able to use navigation from any component
 export const navigationRef = React.createRef();
 
 export function navigate(name, params) {

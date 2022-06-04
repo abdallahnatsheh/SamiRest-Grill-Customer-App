@@ -24,8 +24,10 @@ import {
 import { Header } from "../Components";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../context/AuthContext";
+//managing the tab menu for the main page
 
 const TabButton = ({ label, icons, isFocused, onPress }) => {
+  //tab component
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View
@@ -226,13 +228,6 @@ const MainLayout = ({ navigation, selectedTab, setSelectedTab }) => {
             isFocused={selectedTab === constants.screens.home}
             onPress={() => setSelectedTab(constants.screens.home)}
           />
-          {/*
-          <TabButton
-            label={constants.screens.mainMenu}
-            icons={icons.restaurantMenu}
-            isFocused={selectedTab === constants.screens.mainMenu}
-            onPress={() => setSelectedTab(constants.screens.mainMenu)}
-          />*/}
           <TabButton
             label={constants.screens.cart}
             icons={icons.cart}

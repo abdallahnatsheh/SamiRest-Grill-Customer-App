@@ -16,7 +16,7 @@ import { utils } from "../../utils";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../Firebase/firebase.Config";
 import axios from "axios";
-
+//show order list and send it to restaurant database
 const DeliveryList = ({ navigation }) => {
   const context = useContext(shopContext);
   const { currentUser, dataUser } = useAuth();
@@ -60,6 +60,12 @@ const DeliveryList = ({ navigation }) => {
       orderTime: getTime(),
       orderDate: getDate(),
       orderType: deliveryMod === 1 ? "reserve" : "deliver",
+      shippingFee:
+        deliveryMod === 2 && dataUser.shippingType == "inside"
+          ? 15
+          : deliveryMod === 2 && dataUser.shippingType == "outside"
+          ? 20
+          : 0,
     })
       .then(function () {
         context.emptyCart();
@@ -72,9 +78,19 @@ const DeliveryList = ({ navigation }) => {
   };
   function calcFinalPrice() {
     let finalPrice = 0;
+    let shippingFee =
+      dataUser.shippingType == "inside"
+        ? 15
+        : dataUser.shippingType == "outside"
+        ? 20
+        : 0;
     context.cart.map((cl) => (finalPrice = +finalPrice + +cl.totalPrice));
+    finalPrice = finalPrice.toFixed(2) + shippingFee;
+    finalPrice = Number(finalPrice) + Number(shippingFee);
+    console.log(finalPrice.toFixed(2));
     return finalPrice.toFixed(2);
   }
+  calcFinalPrice();
   function renderHeader() {
     return (
       <Header
@@ -254,12 +270,30 @@ const DeliveryList = ({ navigation }) => {
                 padding: 2,
                 ...FONTS.body5,
               }}
-              disabled={false}
+              disabled={dataUser.shippingType == "away" ? true : false}
               onPress={() => setDeliveryMod(2)}
             />
             <Text style={{ flex: 1, ...FONTS.body3 }}>نوع الطلبية : </Text>
           </View>
+          {deliveryMod == 2 && dataUser.shippingType != "away" && (
+            <View
+              style={{
+                backgroundColor: COLORS.white,
+                padding: 5,
+              }}
+            >
+              <Text style={{ ...FONTS.body3 }}>
+                اضافة الى تكلفة التوصيل :
+                {dataUser.shippingType == "inside"
+                  ? "₪ " + 15.0
+                  : dataUser.shippingType == "outside"
+                  ? "₪ " + 20.0
+                  : 0}
+              </Text>
+            </View>
+          )}
           <LineDivider />
+
           {/**notes */}
           <View
             style={{

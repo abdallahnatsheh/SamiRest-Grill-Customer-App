@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image, BackHandler } from "react-native";
 import { TextButton } from "../../Components";
 import { FONTS, COLORS, SIZES, images } from "../../constants";
-
+//show a screen that the delivery is done
 const DeliveryDone = ({ navigation }) => {
   React.useEffect(() => {
     const backHandler = BackHandler.addEventListener(

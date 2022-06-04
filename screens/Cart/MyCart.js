@@ -17,10 +17,11 @@ import {
 } from "../../Components";
 import { SwipeListView } from "react-native-swipe-list-view";
 import shopContext from "../../context/shop-context";
-
+import { useAuth } from "../../context/AuthContext";
+//cart menu with price calculation
 const MyCart = ({ navigation }) => {
   const context = useContext(shopContext);
-
+  const { dataUser } = useAuth();
   function renderCartList() {
     return context.cart.length > 0 ? (
       <SwipeListView
@@ -124,10 +125,17 @@ const MyCart = ({ navigation }) => {
       </View>
     );
   }
-  function calcFinalPrice() {
+  //calculate total price for the order with shipping fee or whithout it
+  function calcFinalPrice(type) {
     let finalPrice = 0;
+    let shippingFee =
+      dataUser.shippingType == "inside"
+        ? 15
+        : dataUser.shippingType == "outside"
+        ? 20
+        : 0;
     context.cart.map((cl) => (finalPrice = +finalPrice + +cl.totalPrice));
-    return finalPrice;
+    return type == "total" ? finalPrice + shippingFee : finalPrice;
   }
   function renderHeader() {
     return (
@@ -182,8 +190,8 @@ const MyCart = ({ navigation }) => {
       {/**FOOTER */}
       <FooterTotal
         subTotal={calcFinalPrice()}
-        shippingFee={0.0}
-        total={calcFinalPrice()}
+        shippingFee={dataUser.shippingType}
+        total={calcFinalPrice("total")}
         onPress={() => navigation.navigate("DeliveryList")}
         onEmpty={() => navigation.replace("Home")}
       />

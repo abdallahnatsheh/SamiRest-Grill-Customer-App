@@ -21,7 +21,7 @@ import { Header, HorizontalFoodCard } from "../../Components";
 import FilterModal from "../../Components/FilterModal";
 import shopContext from "../../context/shop-context";
 import { useAuth } from "../../context/AuthContext";
-
+//render main menu of the main page
 const MainMenu = ({ navigation }) => {
   const context = useContext(shopContext);
   const { currentUser, dataUser } = useAuth();

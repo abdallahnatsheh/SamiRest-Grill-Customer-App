@@ -12,7 +12,7 @@ import { Header, IconBotton, TextButton, OrderCard } from "../../Components";
 import { COLORS, SIZES, FONTS, icons, dummyData } from "../../constants";
 import { useAuth } from "../../context/AuthContext";
 import { useProfileOrdersHook } from "../../Hooks/profileOrdersHook";
-
+//render order list for delivery or booking orders
 const Order = ({ navigation }) => {
   //import the data of the user
   const { currentUser, dataUser } = useAuth();
