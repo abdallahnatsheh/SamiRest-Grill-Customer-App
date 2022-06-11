@@ -261,12 +261,27 @@ const DeliveryList = ({ navigation }) => {
                 margin: SIZES.base,
                 borderWidth: 1,
                 borderRadius: SIZES.radius,
-                borderColor: deliveryMod === 2 ? COLORS.primary : COLORS.gray,
-                backgroundColor: deliveryMod === 2 ? COLORS.primary : null,
+                borderColor:
+                  dataUser.shippingType == "away"
+                    ? COLORS.lightGray2
+                    : deliveryMod === 2
+                    ? COLORS.primary
+                    : COLORS.gray,
+                backgroundColor:
+                  dataUser.shippingType == "away"
+                    ? COLORS.lightGray2
+                    : deliveryMod === 2
+                    ? COLORS.primary
+                    : null,
               }}
               label="توصيل"
               labelStyle={{
-                color: deliveryMod === 2 ? COLORS.white : COLORS.black,
+                color:
+                  dataUser.shippingType == "away"
+                    ? COLORS.gray
+                    : deliveryMod === 2
+                    ? COLORS.white
+                    : COLORS.black,
                 padding: 2,
                 ...FONTS.body5,
               }}

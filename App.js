@@ -52,16 +52,8 @@ const customFonts = {
 };
 
 const App = () => {
-  //const [isLoaded, error] = useFonts(customFonts);
   const [appIsReady, setAppIsReady] = useState(false);
 
-  /*if (!isLoaded) {
-    return null;
-  }*/
-  /*useEffect(() => {
-    (async () => {})();
-  }, []);
-  */
   useEffect(() => {
     async function prepare() {
       try {
@@ -135,7 +127,6 @@ const App = () => {
               <Stack.Screen name="Order" component={Order} />
               <Stack.Screen name="MySpecialOrder" component={MySpecialOrder} />
               <Stack.Screen name="OrderList" component={OrderList} />
-
               <Stack.Screen name="Map" component={Map} />
               <Stack.Screen name="DailyDeals" component={DailyDeals} />
               <Stack.Screen name="MainMenu" component={MainMenu} />
@@ -147,7 +138,6 @@ const App = () => {
                 name="TermsConditions"
                 component={TermsConditions}
               />
-
               <Stack.Screen
                 name="NotificationSetting"
                 component={NotificationSetting}

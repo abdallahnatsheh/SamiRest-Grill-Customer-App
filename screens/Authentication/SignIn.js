@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image, Alert } from "react-native";
 import { FONTS, SIZES, COLORS, icons } from "../../constants";
 import AuthLayout from "./AuthLayout";
 import { FormInput, TextButton } from "../../Components";
@@ -167,7 +167,21 @@ const SignIn = ({ navigation }) => {
                     ? COLORS.primary
                     : COLORS.transparentPrimray,
               }}
-              onPress={handleSubmit}
+              onPress={() => {
+                return Alert.alert(
+                  "ملاحظة",
+                  "  تطبيق توصيل مطعم سامي يستخدم صلاحيات الموقع من اجل تحديد موقع عنوانك على الخريطة من اجل خدمة توصيل دقيقة ",
+                  [
+                    {
+                      text: "لا اوافق",
+                    },
+                    {
+                      text: "موافق",
+                      onPress: handleSubmit,
+                    },
+                  ]
+                );
+              }}
               disabled={
                 isSubmitting || !isVerythingOk(values.email, values.password)
               }
