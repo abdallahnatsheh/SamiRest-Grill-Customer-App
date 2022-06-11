@@ -2,7 +2,7 @@
   "expo": {
     "name": "samiRestGrill",
     "slug": "samiRestGrill-app",
-    "version": "1.3.0",
+    "version": "1.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon/drawable-xxxhdpi/icon.png",
     "splash": {
@@ -25,14 +25,13 @@
         "foregroundImage": "./assets/playstore.png",
         "backgroundColor": "#FFFFFF"
       },
-      "versionCode": 1,
+      "versionCode": 6,
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_COARSE_LOCATION"
       ],
-      "package": "com.abdallahna.samiRestGrillapp",
+      "package": "com.abdallahna.samiResaurantapp",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyC-xrngxDoq1VuKpqkinK46qoG9EG4-WpA"

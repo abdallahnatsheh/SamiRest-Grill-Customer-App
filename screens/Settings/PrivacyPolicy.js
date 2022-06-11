@@ -53,16 +53,16 @@ const PrivacyPolicy = () => {
         </Text>
         <Text>
           Sami Restaurant and grill built the SamiRest-Grill app as [open
-          source/free/commercial] app. This SERVICE is provided by Sami
-          Restaurant and grill at no cost and is intended for use as is. This
-          page is used to inform visitors regarding our policies with the
-          collection, use, and disclosure of Personal Information if anyone
-          decided to use our Service. If you choose to use our Service, then you
-          agree to the collection and use of information in relation to this
-          policy. The Personal Information that we collect is used for providing
-          and improving the Service. We will not use or share your information
-          with anyone except as described in this Privacy Policy. The terms used
-          in this Privacy Policy have the same meanings as in our Terms and
+          source/free] app. This SERVICE is provided by Sami Restaurant and
+          grill at no cost and is intended for use as is. This page is used to
+          inform visitors regarding our policies with the collection, use, and
+          disclosure of Personal Information if anyone decided to use our
+          Service. If you choose to use our Service, then you agree to the
+          collection and use of information in relation to this policy. The
+          Personal Information that we collect is used for providing and
+          improving the Service. We will not use or share your information with
+          anyone except as described in this Privacy Policy. The terms used in
+          this Privacy Policy have the same meanings as in our Terms and
           Conditions, which are accessible at SamiRest-Grill unless otherwise
           defined in this Privacy Policy.
         </Text>
@@ -72,13 +72,18 @@ const PrivacyPolicy = () => {
         <Text>
           For a better experience, while using our Service, we may require you
           to provide us with certain personally identifiable information,
-          including but not limited to user personal information , user location
-          data . The information that we request will be retained by us and used
-          as described in this privacy policy. The app does use third-party
-          services that may collect information used to identify you. Link to
-          the privacy policy of third-party service providers used by the app *
-          [Google Play Services](https://www.google.com/policies/privacy/) *
-          [Google Analytics for
+          including but not limited to user personal information used to give
+          the proper service as a food delivery service for the restaurant, the
+          app collects location data of the user location coordiantes using
+          google map APIs, to enable the delivery service with google map , just
+          in the foreground , this means we dont collect your locattion data
+          when the app is closed or in the background. The information that we
+          request will be retained by us and used as described in this privacy
+          policy. The app does use third-party services that may collect
+          information used to identify you. Link to the privacy policy of
+          third-party service providers used by the app * [Google Play
+          Services](https://www.google.com/policies/privacy/) * [Google
+          Analytics for
           Firebase](https://firebase.google.com/policies/analytics) * [Firebase
           Crashlytics](https://firebase.google.com/support/privacy/) *
           [Expo](https://expo.io/privacy)
@@ -152,9 +157,9 @@ const PrivacyPolicy = () => {
           We may update our Privacy Policy from time to time. Thus, you are
           advised to review this page periodically for any changes. We will
           notify you of any changes by posting the new Privacy Policy on this
-          page. This policy is effective as of 2022-05-13 **Contact Us** If you
+          page. This policy is effective as of 2022-05-30 **Contact Us** If you
           have any questions or suggestions about our Privacy Policy, do not
-          hesitate to contact us at sami.restaurant2010@gmail.com.
+          hesitate to contact us at abdnatsheh33@gmail.com.
         </Text>
       </View>
     );

@@ -4,7 +4,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  TextInput,
+  Alert,
   FlatList,
   ActivityIndicator,
   StyleSheet,
@@ -54,13 +54,6 @@ const Home = ({ navigation }) => {
 
   //to track selection of category
   React.useEffect(async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      setLocationEnable(false);
-      return;
-    } else {
-      setLocationEnable(true);
-    }
     if (currentUser && dataUser) {
       try {
         let result = await Location.geocodeAsync(
@@ -77,7 +70,7 @@ const Home = ({ navigation }) => {
         console.log("geo error:", e.message);
       }
     }
-  }, [dataUser, dataUser.firstAddress, dataUser.shippingType]);
+  }, [currentUser, dataUser, dataUser.firstAddress, dataUser.shippingType]);
 
   const createDailyDealList = () => {
     //retrive popular list
@@ -197,6 +190,52 @@ const Home = ({ navigation }) => {
       />
     );
   }
+  async function handleGetLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setLocationEnable(false);
+      return;
+    } else {
+      setLocationEnable(true);
+      setShowLocationModal(true);
+    }
+    if (currentUser && dataUser) {
+      try {
+        let result = await Location.geocodeAsync(
+          dataUser.firstAddress + "," + dataUser?.secondAddress
+        );
+        setIfLocMapped(result[0]);
+        if (result[0]) {
+          dataUser.ismappable = true;
+          dataUser.locationCoor = result[0];
+        } else {
+          dataUser.ismappable = false;
+        }
+      } catch (e) {
+        console.log("geo error:", e.message);
+      }
+    }
+  }
+  // this function to follow google play policy of using location service
+  function UseLocationWithAlert() {
+    if (currentUser) {
+      Alert.alert(
+        "ملاحظة",
+        "  تطبيق توصيل مطعم سامي يستخدم صلاحيات الموقع من اجل تحديد موقع عنوانك على الخريطة من اجل خدمة توصيل دقيقة ",
+        [
+          {
+            text: "لا اوافق",
+          },
+          {
+            text: "موافق",
+            onPress: handleGetLocation,
+          },
+        ]
+      );
+    } else {
+      Alert.alert("خطأ", "سجل دخولك اولا", [{ text: "حسناً" }]);
+    }
+  }
   // render flat list section and check if location permission is granted
   const Section = ({ title, onPress, children }) => {
     if (!locationEnable) {
@@ -206,6 +245,7 @@ const Home = ({ navigation }) => {
         ToastAndroid.BOTTOM
       );
     }
+
     return (
       <View>
         {/**HEADER */}
@@ -238,7 +278,7 @@ const Home = ({ navigation }) => {
       ></Section>
     );
   }
-//render 3 random orders that have deals
+  //render 3 random orders that have deals
   function renderDeals() {
     return (
       <Section title="الخصومات" onPress={() => navigation.navigate("MainMenu")}>
@@ -390,7 +430,7 @@ const Home = ({ navigation }) => {
             marginTop: SIZES.base,
             alignItems: "center",
           }}
-          onPress={() => setShowLocationModal(true)}
+          onPress={() => UseLocationWithAlert()}
         >
           <Image
             source={icons.down_arrow}
@@ -421,7 +461,7 @@ const Home = ({ navigation }) => {
       </View>
     );
   }
-//refresh the page to be updated
+  //refresh the page to be updated
   const [refreshing, setRefreshing] = React.useState(false);
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
