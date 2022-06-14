@@ -1,5 +1,6 @@
 # SamiRest-Grill-Customer-App
-Customer mobile application basically for android and optionally for ios
+Customer mobile application basically for android and optionally for ios</br>
+GooglePlay : https://play.google.com/store/apps/details?id=com.abdallahna.samiResaurantapp </br>
 </br>
 #feature:</br>
 1- see all updated orders with deals and daily deals </br>
