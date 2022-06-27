@@ -251,7 +251,7 @@ const state = [
   },
 ];
 
-const GOOGLE_MAP_API_KEY = "AIzaSyC-xrngxDoq1VuKpqkinK46qoG9EG4-WpA";
+const GOOGLE_MAP_API_KEY = "";
 
 export default {
   onboarding_screens,
